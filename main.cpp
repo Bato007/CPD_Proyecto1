@@ -305,7 +305,7 @@ void Dot::move()
     if( ( mPosX < 0 ) || ( mPosX + DOT_WIDTH > SCREEN_WIDTH ) )
     {
         //Move back
-        mPosX -= mVelX;
+        mVelX = -mVelX;
     }
 
     //Move the dot up or down
@@ -315,7 +315,7 @@ void Dot::move()
     if( ( mPosY < 0 ) || ( mPosY + DOT_HEIGHT > SCREEN_HEIGHT ) )
     {
         //Move back
-        mPosY -= mVelY;
+		mVelY = -mVelY;
     }
 }
 
