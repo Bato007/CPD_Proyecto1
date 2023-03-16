@@ -6,6 +6,7 @@ and may not be redistributed without written permission.*/
 #include <SDL2/SDL_image.h>
 #include <stdio.h>
 #include <string>
+#include <stdlib.h>     /* srand, rand */
 
 //Screen dimension constants
 const int SCREEN_WIDTH = 640;
@@ -101,10 +102,7 @@ class Dot
 		static const int DOT_VEL = 10;
 
 		//Initializes the variables
-		Dot();
-
-		//Takes key presses and adjusts the dot's velocity
-		void handleEvent( SDL_Event& e );
+		Dot(int, int);
 
 		//Moves the dot
 		void move();
@@ -287,43 +285,15 @@ int LTexture::getHeight()
 }
 
 
-Dot::Dot()
+Dot::Dot(int x, int y)
 {
     //Initialize the offsets
     mPosX = 0;
     mPosY = 0;
 
     //Initialize the velocity
-    mVelX = 0;
-    mVelY = 0;
-}
-
-void Dot::handleEvent( SDL_Event& e )
-{
-    //If a key was pressed
-	if( e.type == SDL_KEYDOWN && e.key.repeat == 0 )
-    {
-        //Adjust the velocity
-        switch( e.key.keysym.sym )
-        {
-            case SDLK_UP: mVelY -= DOT_VEL; break;
-            case SDLK_DOWN: mVelY += DOT_VEL; break;
-            case SDLK_LEFT: mVelX -= DOT_VEL; break;
-            case SDLK_RIGHT: mVelX += DOT_VEL; break;
-        }
-    }
-    //If a key was released
-    else if( e.type == SDL_KEYUP && e.key.repeat == 0 )
-    {
-        //Adjust the velocity
-        switch( e.key.keysym.sym )
-        {
-            case SDLK_UP: mVelY += DOT_VEL; break;
-            case SDLK_DOWN: mVelY -= DOT_VEL; break;
-            case SDLK_LEFT: mVelX += DOT_VEL; break;
-            case SDLK_RIGHT: mVelX -= DOT_VEL; break;
-        }
-    }
+    mVelX = x;
+    mVelY = y;
 }
 
 void Dot::move()
@@ -463,7 +433,7 @@ int main( int argc, char* args[] )
 			SDL_Event e;
 
 			//The dot that will be moving around on the screen
-			Dot dot;
+			Dot dot(rand() % 10, rand() % 10);
 
 			//While application is running
 			while( !quit )
@@ -476,9 +446,6 @@ int main( int argc, char* args[] )
 					{
 						quit = true;
 					}
-
-					//Handle input for the dot
-					dot.handleEvent( e );
 				}
 
 				//Move the dot
