@@ -1,3 +1,11 @@
+
+//A circle stucture
+struct Circle
+{
+	int x, y;
+	int r;
+};
+
 class Dot
 {
     public:
@@ -12,7 +20,7 @@ class Dot
 		Dot(int, int);
 
 		//Moves the dot
-		void move();
+		void move(Circle&);
 
 		//Shows the dot on the screen
 		void render();
@@ -23,10 +31,19 @@ class Dot
 		int getPosX() {return mPosX;};
 		int getPosY() {return mPosY;};
 
+		//Gets collision circle
+		Circle&  getCollider();
+
     private:
 		//The X and Y offsets of the dot
 		int mPosX, mPosY;
 
 		//The velocity of the dot
 		int mVelX, mVelY;
+
+		//Dot's collision circle
+		Circle mCollider;
+    
+		//Moves the collision circle relative to the dot's offset
+		void shiftColliders();
 };

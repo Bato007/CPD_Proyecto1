@@ -16,6 +16,21 @@ using namespace std;
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //Texture wrapper class
 class LTexture
 {
@@ -98,6 +113,41 @@ class LTimer
 
 //Starts up SDL and creates window
 bool init();
+
+//Circle/Circle collision detector
+bool checkCollision( Dot& a, Dot& b );
+
+//Calculates distance squared between two points
+double distanceSquared( int x1, int y1, int x2, int y2 );
+
+
+
+
+
+
+bool checkCollision( Circle& a, Circle& b )
+{
+	//Calculate total radius squared
+	int totalRadiusSquared = a.r + b.r;
+	totalRadiusSquared = totalRadiusSquared * totalRadiusSquared;
+
+    //If the distance between the centers of the circles is less than the sum of their radii
+    if( distanceSquared( a.x, a.y, b.x, b.y ) < ( totalRadiusSquared ) )
+    {
+        //The circles have collided
+        return true;
+    }
+
+    //If not
+    return false;
+}
+
+double distanceSquared( int x1, int y1, int x2, int y2 )
+{
+	int deltaX = x2 - x1;
+	int deltaY = y2 - y1;
+	return deltaX*deltaX + deltaY*deltaY;
+}
 
 //Loads media
 bool loadMedia();
@@ -274,26 +324,30 @@ Dot::Dot(int x, int y)
     mVelY = y;
 }
 
-void Dot::move()
+void Dot::move(Circle& circle)
 {
     //Move the dot left or right
     mPosX += mVelX;
+	shiftColliders();
 
-    //If the dot went too far to the left or right
-    if( ( mPosX < 0 ) || ( mPosX + DOT_WIDTH > SCREEN_WIDTH ) )
+    //If the dot collided or went too far to the left or right
+	if( ( mPosX - mCollider.r < 0 ) || ( mPosX + mCollider.r > SCREEN_WIDTH ) || checkCollision( mCollider, circle ) )
     {
         //Move back
-        mVelX = -mVelX;
+        mVelX -= mVelX;
+		shiftColliders();
     }
 
     //Move the dot up or down
     mPosY += mVelY;
+	shiftColliders();
 
-    //If the dot went too far up or down
-    if( ( mPosY < 0 ) || ( mPosY + DOT_HEIGHT > SCREEN_HEIGHT ) )
+    //If the dot collided or went too far up or down
+    if( ( mPosY - mCollider.r < 0 ) || ( mPosY + mCollider.r > SCREEN_HEIGHT ) || checkCollision( mCollider, circle ) )
     {
         //Move back
-		mVelY = -mVelY;
+        mPosY -= mVelY;
+		shiftColliders();
     }
 }
 
@@ -301,6 +355,18 @@ void Dot::render()
 {
     //Show the dot
 	gDotTexture.render( mPosX, mPosY );
+}
+
+Circle& Dot::getCollider()
+{
+	return mCollider;
+}
+
+void Dot::shiftColliders()
+{
+	//Align collider to center of dot
+	mCollider.x = mPosX;
+	mCollider.y = mPosY;
 }
 
 bool init()
@@ -410,6 +476,8 @@ int main( int argc, char* args[] )
 			//Event handler
 			SDL_Event e;
 			vector<Dot*> dots;
+
+			Dot otherDot(rand() % 10, rand() % 10);
 			//The dot that will be moving around on the screen
 			for (int i=0; i<atoi(args[1]); i++) {
 				Dot* dot = new Dot(rand() % 5 + 1, rand() % 5 + 1);
@@ -431,7 +499,7 @@ int main( int argc, char* args[] )
 
 				//Move the dot
 				for (Dot* dot: dots) {
-					dot->move();
+					dot->move(otherDot.getCollider());
 				}
 				// dotAB.move();
 
@@ -442,6 +510,7 @@ int main( int argc, char* args[] )
 				//Render objects
 				for (Dot* dot: dots) {
 					dot->render();
+					otherDot.render();
 				}
 				// dotAB.render();
 
