@@ -4,10 +4,14 @@ and may not be redistributed without written permission.*/
 //Using SDL, SDL_image, standard IO, and strings
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <vector>
 #include <stdio.h>
+#include <iostream>
 #include <string>
 #include <stdlib.h>     /* srand, rand */
 
+#include "Headers/Dot.h"
+using namespace std;
 //Screen dimension constants
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
@@ -91,32 +95,6 @@ class LTimer
 };
 
 //The dot that will move around on the screen
-class Dot
-{
-    public:
-		//The dimensions of the dot
-		static const int DOT_WIDTH = 20;
-		static const int DOT_HEIGHT = 20;
-
-		//Maximum axis velocity of the dot
-		static const int DOT_VEL = 10;
-
-		//Initializes the variables
-		Dot(int, int);
-
-		//Moves the dot
-		void move();
-
-		//Shows the dot on the screen
-		void render();
-
-    private:
-		//The X and Y offsets of the dot
-		int mPosX, mPosY;
-
-		//The velocity of the dot
-		int mVelX, mVelY;
-};
 
 //Starts up SDL and creates window
 bool init();
@@ -431,9 +409,12 @@ int main( int argc, char* args[] )
 
 			//Event handler
 			SDL_Event e;
-
+			vector<Dot*> dots;
 			//The dot that will be moving around on the screen
-			Dot dot(rand() % 10, rand() % 10);
+			for (int i=0; i<atoi(args[1]); i++) {
+				Dot* dot = new Dot(rand() % 5 + 1, rand() % 5 + 1);
+				dots.push_back(dot);
+			}
 
 			//While application is running
 			while( !quit )
@@ -449,14 +430,20 @@ int main( int argc, char* args[] )
 				}
 
 				//Move the dot
-				dot.move();
+				for (Dot* dot: dots) {
+					dot->move();
+				}
+				// dotAB.move();
 
 				//Clear screen
 				SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
 				SDL_RenderClear( gRenderer );
 
 				//Render objects
-				dot.render();
+				for (Dot* dot: dots) {
+					dot->render();
+				}
+				// dotAB.render();
 
 				//Update screen
 				SDL_RenderPresent( gRenderer );
