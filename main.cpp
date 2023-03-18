@@ -125,14 +125,14 @@ double distanceSquared( int x1, int y1, int x2, int y2 );
 
 
 
-bool checkCollision( Circle& a, Circle& b )
+bool checkCollision( Circle* a, Circle* b )
 {
 	//Calculate total radius squared
-	int totalRadiusSquared = a.r + b.r;
+	int totalRadiusSquared = a->r + b->r;
 	totalRadiusSquared = totalRadiusSquared * totalRadiusSquared;
 
     //If the distance between the centers of the circles is less than the sum of their radii
-    if( distanceSquared( a.x, a.y, b.x, b.y ) < ( totalRadiusSquared ) )
+    if( distanceSquared( a->x, a->y, b->x, b->y ) < ( totalRadiusSquared ) )
     {
         //The circles have collided
         return true;
@@ -144,6 +144,8 @@ bool checkCollision( Circle& a, Circle& b )
 
 double distanceSquared( int x1, int y1, int x2, int y2 )
 {
+	cout << "y1 " << y1 << "   x1 " << x1 << "\n";
+	cout << "y2 " << y2 << "   x2 " << x2 << "\n";
 	int deltaX = x2 - x1;
 	int deltaY = y2 - y1;
 	return deltaX*deltaX + deltaY*deltaY;
@@ -313,28 +315,33 @@ int LTexture::getHeight()
 }
 
 
-Dot::Dot(int x, int y)
+Dot::Dot(int x, int y, int posX, int posY)
 {
     //Initialize the offsets
-    mPosX = 0;
-    mPosY = 0;
+    mPosX = posX;
+    mPosY = posY;
+
+	//Set collision circle size
+	mCollider = new Circle();
+	mCollider->r = DOT_WIDTH / 2;
 
     //Initialize the velocity
     mVelX = x;
     mVelY = y;
 }
 
-void Dot::move(Circle& circle)
+void Dot::move(Circle* circle)
 {
     //Move the dot left or right
     mPosX += mVelX;
 	shiftColliders();
 
     //If the dot collided or went too far to the left or right
-	if( ( mPosX - mCollider.r < 0 ) || ( mPosX + mCollider.r > SCREEN_WIDTH ) || checkCollision( mCollider, circle ) )
+	if( ( mPosX - mCollider->r < 0 ) || ( mPosX + mCollider->r > SCREEN_WIDTH ) || checkCollision( mCollider, circle ) )
     {
+		cout << "Entra en el if\n";
         //Move back
-        mVelX -= mVelX;
+        mVelX = -mVelX;
 		shiftColliders();
     }
 
@@ -343,10 +350,11 @@ void Dot::move(Circle& circle)
 	shiftColliders();
 
     //If the dot collided or went too far up or down
-    if( ( mPosY - mCollider.r < 0 ) || ( mPosY + mCollider.r > SCREEN_HEIGHT ) || checkCollision( mCollider, circle ) )
+    if( ( mPosY - mCollider->r < 0 ) || ( mPosY + mCollider->r > SCREEN_HEIGHT ) || checkCollision( mCollider, circle ) )
     {
+		cout << "Entra en el segundo if\n";
         //Move back
-        mPosY -= mVelY;
+        mVelY = -mVelY;
 		shiftColliders();
     }
 }
@@ -354,19 +362,21 @@ void Dot::move(Circle& circle)
 void Dot::render()
 {
     //Show the dot
-	gDotTexture.render( mPosX, mPosY );
+	gDotTexture.render( mPosX - mCollider->r, mPosY - mCollider->r );
 }
 
-Circle& Dot::getCollider()
+Circle* Dot::getCollider(Dot *otherdot)
 {
-	return mCollider;
+	cout << "dot get collider " << otherdot->mCollider->x << "      " << otherdot->mCollider->y + "\n";
+	return otherdot->mCollider;
 }
+
 
 void Dot::shiftColliders()
 {
 	//Align collider to center of dot
-	mCollider.x = mPosX;
-	mCollider.y = mPosY;
+	mCollider->x = mPosX;
+	mCollider->y = mPosY;
 }
 
 bool init()
@@ -477,12 +487,12 @@ int main( int argc, char* args[] )
 			SDL_Event e;
 			vector<Dot*> dots;
 
-			Dot otherDot(rand() % 10, rand() % 10);
 			//The dot that will be moving around on the screen
 			for (int i=0; i<atoi(args[1]); i++) {
-				Dot* dot = new Dot(rand() % 5 + 1, rand() % 5 + 1);
+				Dot* dot = new Dot(rand() % 5 + 1, rand() % 5 + 1, i*100 + 20, i*100 + 20);
 				dots.push_back(dot);
 			}
+			// Dot otherdot(rand() % 5 + 1, rand() % 5 + 1, 100 + 20, 100 + 20);
 
 			//While application is running
 			while( !quit )
@@ -498,9 +508,12 @@ int main( int argc, char* args[] )
 				}
 
 				//Move the dot
-				for (Dot* dot: dots) {
-					dot->move(otherDot.getCollider());
-				}
+				Dot* dot = dots[0];
+				Dot* otherdot = dots[1];
+				dot->move(otherdot -> getCollider(otherdot));
+				// for (Dot* dot: dots) {
+				// 	dot->move(otherDot);
+				// }
 				// dotAB.move();
 
 				//Clear screen
@@ -510,8 +523,8 @@ int main( int argc, char* args[] )
 				//Render objects
 				for (Dot* dot: dots) {
 					dot->render();
-					otherDot.render();
 				}
+				// otherdot.render();
 				// dotAB.render();
 
 				//Update screen

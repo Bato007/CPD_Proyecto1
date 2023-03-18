@@ -17,10 +17,10 @@ class Dot
 		static const int DOT_VEL = 10;
 
 		//Initializes the variables
-		Dot(int, int);
+		Dot(int, int, int, int);
 
 		//Moves the dot
-		void move(Circle&);
+		void move(Circle*);
 
 		//Shows the dot on the screen
 		void render();
@@ -32,7 +32,7 @@ class Dot
 		int getPosY() {return mPosY;};
 
 		//Gets collision circle
-		Circle&  getCollider();
+		Circle*  getCollider(Dot *otherdot);
 
     private:
 		//The X and Y offsets of the dot
@@ -42,7 +42,7 @@ class Dot
 		int mVelX, mVelY;
 
 		//Dot's collision circle
-		Circle mCollider;
+		Circle* mCollider;
     
 		//Moves the collision circle relative to the dot's offset
 		void shiftColliders();
