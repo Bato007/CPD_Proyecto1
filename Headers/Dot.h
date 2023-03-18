@@ -36,6 +36,9 @@ class Dot
 		//Gets collision circle
 		Circle*  getCollider(Dot *otherdot);
 
+		// Print info
+		void print();
+
     private:
 		//The X and Y offsets of the dot
 		int mPosX, mPosY;

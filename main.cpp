@@ -344,6 +344,10 @@ void Dot::move(Circle* circle)
     }
 }
 
+void Dot::print() {
+	cout << "PosX: " << mPosX << ", PosY: " << mPosY << ", VelX: " << mVelX << ", VelY: " << mVelY << endl;
+	cout << "Collider info: colliderX: " << mCollider->x << ", colliderY: " << mCollider->y << endl;
+}
 
 void Dot::move()
 {
@@ -366,6 +370,8 @@ void Dot::move()
         //Move back
 		mVelY = -mVelY;
     }
+
+		shiftColliders();
 }
 
 void Dot::render()
@@ -521,14 +527,11 @@ int main( int argc, char* args[] )
 				{
 					//Move the dot
 					Dot* dot = dots[i];
-
 					// For every other dot
-					for (size_t j = i; j < dots.size(); j++)
+					for (size_t j = i + 1; j < dots.size(); j++)
 					{
-						if (j + 1 != dots.size()) {
-							Dot* otherdot = dots[j + 1];
-							dot->move(otherdot -> getCollider(otherdot));
-						}
+						Dot* otherdot = dots[j];
+						dot->move(otherdot -> getCollider(otherdot));
 					}
 					if (i + 1 == dots.size()) {
 						dot->move();
