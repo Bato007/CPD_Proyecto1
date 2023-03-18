@@ -325,6 +325,7 @@ void Dot::move(Circle* circle)
 		cout << "Entra en el if\n";
         //Move back
         mVelX = -mVelX;
+    	// mPosX += mVelX;
 		shiftColliders();
     }
 
@@ -338,7 +339,32 @@ void Dot::move(Circle* circle)
 		cout << "Entra en el segundo if\n";
         //Move back
         mVelY = -mVelY;
+    	// mPosY += mVelY;
 		shiftColliders();
+    }
+}
+
+
+void Dot::move()
+{
+    //Move the dot left or right
+    mPosX += mVelX;
+
+    //If the dot went too far to the left or right
+    if( ( mPosX < 0 ) || ( mPosX + DOT_WIDTH > SCREEN_WIDTH ) )
+    {
+        //Move back
+        mVelX = -mVelX;
+    }
+
+    //Move the dot up or down
+    mPosY += mVelY;
+
+    //If the dot went too far up or down
+    if( ( mPosY < 0 ) || ( mPosY + DOT_HEIGHT > SCREEN_HEIGHT ) )
+    {
+        //Move back
+		mVelY = -mVelY;
     }
 }
 
@@ -495,12 +521,17 @@ int main( int argc, char* args[] )
 				{
 					//Move the dot
 					Dot* dot = dots[i];
-					if (i + 1 != dots.size()) {
-						Dot* otherdot = dots[i + 1];
-						dot->move(otherdot -> getCollider(otherdot));
-					} else {
-						Dot* otherdot = dots[0];
-						dot->move(otherdot -> getCollider(otherdot));
+
+					// For every other dot
+					for (size_t j = i; j < dots.size(); j++)
+					{
+						if (j + 1 != dots.size()) {
+							Dot* otherdot = dots[j + 1];
+							dot->move(otherdot -> getCollider(otherdot));
+						}
+					}
+					if (i + 1 == dots.size()) {
+						dot->move();
 					}
 				}
 				

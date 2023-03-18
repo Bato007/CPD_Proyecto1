@@ -21,6 +21,8 @@ class Dot
 
 		//Moves the dot
 		void move(Circle*);
+		void move();
+
 
 		//Shows the dot on the screen
 		void render();
