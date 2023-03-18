@@ -17,20 +17,6 @@ const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //Texture wrapper class
 class LTexture
 {
@@ -119,11 +105,6 @@ bool checkCollision( Dot& a, Dot& b );
 
 //Calculates distance squared between two points
 double distanceSquared( int x1, int y1, int x2, int y2 );
-
-
-
-
-
 
 bool checkCollision( Circle* a, Circle* b )
 {
@@ -321,9 +302,11 @@ Dot::Dot(int x, int y, int posX, int posY)
     mPosX = posX;
     mPosY = posY;
 
-	//Set collision circle size
-	mCollider = new Circle();
-	mCollider->r = DOT_WIDTH / 2;
+    //Set collision circle size
+    mCollider = new Circle();
+    mCollider->r = DOT_WIDTH / 2;
+    mCollider->x = posX;
+    mCollider->y = posY;
 
     //Initialize the velocity
     mVelX = x;
@@ -367,7 +350,7 @@ void Dot::render()
 
 Circle* Dot::getCollider(Dot *otherdot)
 {
-	cout << "dot get collider " << otherdot->mCollider->x << "      " << otherdot->mCollider->y + "\n";
+	cout << "[GET COLIDER] " << otherdot->mCollider->r << " -------- " << otherdot->mCollider->y << endl;
 	return otherdot->mCollider;
 }
 
@@ -508,7 +491,7 @@ int main( int argc, char* args[] )
 				}
 
 				//Move the dot
-				Dot* dot = dots[0];
+				Dot* dot = dots.at(0);
 				Dot* otherdot = dots[1];
 				dot->move(otherdot -> getCollider(otherdot));
 				// for (Dot* dot: dots) {
