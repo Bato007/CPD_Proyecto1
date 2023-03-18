@@ -490,10 +490,22 @@ int main( int argc, char* args[] )
 					}
 				}
 
-				//Move the dot
-				Dot* dot = dots.at(0);
-				Dot* otherdot = dots[1];
-				dot->move(otherdot -> getCollider(otherdot));
+
+				for (size_t i = 0; i < dots.size(); i++)
+				{
+					//Move the dot
+					Dot* dot = dots[i];
+					if (i + 1 != dots.size()) {
+						Dot* otherdot = dots[i + 1];
+						dot->move(otherdot -> getCollider(otherdot));
+					} else {
+						Dot* otherdot = dots[0];
+						dot->move(otherdot -> getCollider(otherdot));
+					}
+				}
+				
+
+
 				// for (Dot* dot: dots) {
 				// 	dot->move(otherDot);
 				// }
