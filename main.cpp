@@ -494,7 +494,7 @@ int main( int argc, char* args[] )
 
 			//The dot that will be moving around on the screen
 			for (int i=0; i<atoi(args[1]); i++) {
-				int size = 3;
+				int size = rand() % 4;
 				switch (size)
 				{
 				case 0:
