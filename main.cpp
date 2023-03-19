@@ -497,17 +497,17 @@ void createNewDot(int diameter, int posX, int posY) {
       case 20:
         /* 20 dot */
         /* Speed: [7, 8]  */
-        dots.push_back(new Dot(rand() % 2 + 7, rand() % 2 + 7, posX  + diameter, posY + diameter, &dot20Texture, diameter));
+        dots.push_back(new Dot(rand() % 2 + 4, rand() % 2 + 4, posX  + diameter, posY + diameter, &dot20Texture, diameter));
         break;
       case 40:
         /* 40 dot */
         /* Speed: [5, 6]  */
-        dots.push_back(new Dot(rand() % 2 + 5, rand() % 2 + 5, posX + diameter, posY + diameter, &dot40Texture, diameter));
+        dots.push_back(new Dot(rand() % 2 + 3.8, rand() % 2 + 3.8, posX + diameter, posY + diameter, &dot40Texture, diameter));
         break;
       case 60:
         /* 60 dot */
         /* Speed: [4, 5]  */
-        dots.push_back(new Dot(rand() % 2 + 4, rand() % 2 + 4, posX + diameter, posY + diameter, &dot60Texture, diameter));
+        dots.push_back(new Dot(rand() % 2 + 3.4, rand() % 2 + 3.4, posX + diameter, posY + diameter, &dot60Texture, diameter));
         break;
       case 80:
         /* 80 dot */
@@ -650,6 +650,7 @@ int main( int argc, char* args[] ) {
 
       }
       if (i + 1 == dots.size()) {
+        // cout << "Entra move sola \n";
         dot->move();
       }
     }
