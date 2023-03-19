@@ -14,6 +14,8 @@ using namespace std;
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
+vector<Dot*> dots;
+
 
 // The application time based timer
 class LTimer {
@@ -71,8 +73,6 @@ bool checkCollision( Circle* a, Circle* b ) {
 }
 
 double distanceSquared(int x1, int y1, int x2, int y2) {
-	cout << "y1 " << y1 << "   x1 " << x1 << "\n";
-	cout << "y2 " << y2 << "   x2 " << x2 << "\n";
 	int deltaX = x2 - x1;
 	int deltaY = y2 - y1;
 	return deltaX*deltaX + deltaY*deltaY;
@@ -94,8 +94,20 @@ SDL_Renderer* gRenderer = NULL;
 LTexture gDotTexture;
 LTexture dot20Texture;
 LTexture dot40Texture;
+LTexture dot60Texture;
 LTexture dot80Texture;
+LTexture dot100Texture;
+LTexture dot120Texture;
+LTexture dot140Texture;
 LTexture dot160Texture;
+LTexture dot180Texture;
+LTexture dot200Texture;
+LTexture dot220Texture;
+LTexture dot240Texture;
+LTexture dot260Texture;
+LTexture dot400Texture;
+LTexture dot500Texture;
+LTexture dot700Texture;
 
 LTexture::LTexture() {
 	// Initialize
@@ -258,7 +270,6 @@ void Dot::move(Circle* circle) {
 
   //If the dot collided or went too far to the left or right
 	if( (mPosX - mCollider->r < 0 ) || ( mPosX + mCollider->r > SCREEN_WIDTH ) || checkCollision( mCollider, circle )) {
-		cout << "Entra en el if\n";
     //Move back
     mVelX = -mVelX;
     // mPosX += mVelX;
@@ -271,7 +282,6 @@ void Dot::move(Circle* circle) {
 
   //If the dot collided or went too far up or down
   if((mPosY - mCollider->r < 0) || (mPosY + mCollider->r > SCREEN_HEIGHT) || checkCollision(mCollider, circle)) {
-    cout << "Entra en el segundo if\n";
     //Move back
     mVelY = -mVelY;
     // mPosY += mVelY;
@@ -313,7 +323,6 @@ void Dot::render() {
 }
 
 Circle* Dot::getCollider(Dot *otherdot) {
-	cout << "[GET COLIDER] " << otherdot->mCollider->r << " -------- " << otherdot->mCollider->y << endl;
 	return otherdot->mCollider;
 }
 
@@ -378,13 +387,74 @@ bool loadMedia() {
 		success = false;
 	}
 
+	if (!dot60Texture.loadFromFile("./dotsTextures/dot60.bmp")) {
+    cout << "[ERROR]: Failed to load dot60 texture" << endl;
+		success = false;
+	}
+
 	if (!dot80Texture.loadFromFile( "./dotsTextures/dot80.bmp")){
     cout << "[ERROR]: Failed to load dot80 texture" << endl;
+		success = false;
+	}
+  
+	if (!dot100Texture.loadFromFile("./dotsTextures/dot100.bmp")) {
+    cout << "[ERROR]: Failed to load dot100 texture" << endl;
+		success = false;
+	}
+  
+	if (!dot120Texture.loadFromFile("./dotsTextures/dot120.bmp")) {
+    cout << "[ERROR]: Failed to load dot120 texture" << endl;
+		success = false;
+	}
+
+	if (!dot140Texture.loadFromFile("./dotsTextures/dot140.bmp")) {
+    cout << "[ERROR]: Failed to load dot140 texture" << endl;
 		success = false;
 	}
 
 	if (!dot160Texture.loadFromFile("./dotsTextures/dot160.bmp")) {
     cout << "[ERROR]: Failed to load dot160 texture" << endl;
+		success = false;
+	}
+  
+	if (!dot180Texture.loadFromFile("./dotsTextures/dot180.bmp")) {
+    cout << "[ERROR]: Failed to load dot180 texture" << endl;
+		success = false;
+	}
+
+	if (!dot200Texture.loadFromFile("./dotsTextures/dot200.bmp")) {
+    cout << "[ERROR]: Failed to load dot200 texture" << endl;
+		success = false;
+	}
+  
+	if (!dot220Texture.loadFromFile("./dotsTextures/dot220.bmp")) {
+    cout << "[ERROR]: Failed to load dot200 texture" << endl;
+		success = false;
+	}
+
+	if (!dot240Texture.loadFromFile("./dotsTextures/dot240.bmp")) {
+    cout << "[ERROR]: Failed to load dot200 texture" << endl;
+		success = false;
+	}
+
+	if (!dot260Texture.loadFromFile("./dotsTextures/dot260.bmp")) {
+    cout << "[ERROR]: Failed to load dot200 texture" << endl;
+		success = false;
+	}
+
+	if (!dot400Texture.loadFromFile("./dotsTextures/dot400.bmp")) {
+    cout << "[ERROR]: Failed to load dot200 texture" << endl;
+		success = false;
+	}
+
+	if (!dot500Texture.loadFromFile("./dotsTextures/dot500.bmp")) {
+    cout << "[ERROR]: Failed to load dot200 texture" << endl;
+		success = false;
+	}
+
+
+	if (!dot700Texture.loadFromFile("./dotsTextures/dot700.bmp")) {
+    cout << "[ERROR]: Failed to load dot200 texture" << endl;
 		success = false;
 	}
 
@@ -395,8 +465,20 @@ void close() {
 	// Free loaded images
 	dot20Texture.free();
 	dot40Texture.free();
+	dot60Texture.free();
 	dot80Texture.free();
+	dot100Texture.free();
+	dot120Texture.free();
+	dot140Texture.free();
 	dot160Texture.free();
+	dot180Texture.free();
+	dot200Texture.free();
+	dot220Texture.free();
+	dot240Texture.free();
+	dot260Texture.free();
+	dot400Texture.free();
+	dot500Texture.free();
+	dot700Texture.free();
 
 	// Destroy window	
 	SDL_DestroyRenderer(gRenderer);
@@ -408,6 +490,97 @@ void close() {
 	IMG_Quit();
 	SDL_Quit();
 }
+
+
+void createNewDot(int diameter, int posX, int posY) {
+  switch (diameter) {
+      case 20:
+        /* 20 dot */
+        /* Speed: [7, 8]  */
+        dots.push_back(new Dot(rand() % 2 + 7, rand() % 2 + 7, posX  + diameter, posY + diameter, &dot20Texture, diameter));
+        break;
+      case 40:
+        /* 40 dot */
+        /* Speed: [5, 6]  */
+        dots.push_back(new Dot(rand() % 2 + 5, rand() % 2 + 5, posX + diameter, posY + diameter, &dot40Texture, diameter));
+        break;
+      case 60:
+        /* 60 dot */
+        /* Speed: [4, 5]  */
+        dots.push_back(new Dot(rand() % 2 + 4, rand() % 2 + 4, posX + diameter, posY + diameter, &dot60Texture, diameter));
+        break;
+      case 80:
+        /* 80 dot */
+        /* Speed: [3, 4]  */
+        dots.push_back(new Dot(rand() % 2 + 3, rand() % 2 + 3, posX + diameter, posY + diameter, &dot80Texture, diameter));
+        break;
+      case 100:
+        /* 100 dot */
+        /* Speed: [2, 3]  */
+        dots.push_back(new Dot(rand() % 2 + 2.5, rand() % 2 + 2.5, posX + diameter, posY + diameter, &dot100Texture, diameter));
+        break;
+      case 120:
+        /* 100 dot */
+        /* Speed: [2, 3]  */
+        dots.push_back(new Dot(rand() % 2 + 2, rand() % 2 + 2, posX + diameter, posY + diameter, &dot120Texture, diameter));
+        break;
+      case 140:
+        /* 100 dot */
+        /* Speed: [2, 3]  */
+        dots.push_back(new Dot(rand() % 2 + 1.8, rand() % 2 + 1.8, posX + diameter, posY + diameter, &dot140Texture, diameter));
+        break;
+      case 160:
+        /* 160 dot */
+        /* Speed: [1, 2]  */
+        dots.push_back(new Dot(rand() % 2 + 1.5, rand() % 2 + 1.5, posX + diameter, posY + diameter, &dot160Texture, diameter));
+        break;
+      case 180:
+        /* 100 dot */
+        /* Speed: [2, 3]  */
+        dots.push_back(new Dot(rand() % 2 + 1, rand() % 2 + 1, posX + diameter, posY + diameter, &dot180Texture, diameter));
+        break;
+      case 200:
+        /* 100 dot */
+        /* Speed: [2, 3]  */
+        dots.push_back(new Dot(rand() % 2 + 0.5, rand() % 2 + 0.5, posX + diameter, posY + diameter, &dot200Texture, diameter));
+        break;
+      case 220:
+        /* 100 dot */
+        /* Speed: [2, 3]  */
+        dots.push_back(new Dot(rand() % 2 + 0.4, rand() % 2 + 0.4, posX + diameter, posY + diameter, &dot220Texture, diameter));
+        break;
+      case 240:
+        /* 100 dot */
+        /* Speed: [2, 3]  */
+        dots.push_back(new Dot(rand() % 2 + 0.35, rand() % 2 + 0.35, posX + diameter, posY + diameter, &dot240Texture, diameter));
+        break;
+      case 260:
+        /* 100 dot */
+        /* Speed: [2, 3]  */
+        dots.push_back(new Dot(rand() % 2 + 0.4, rand() % 2 + 0.4, posX + diameter, posY + diameter, &dot260Texture, diameter));
+        break;
+      case 400:
+        /* 100 dot */
+        /* Speed: [2, 3]  */
+        dots.push_back(new Dot(rand() % 2 + 0.3, rand() % 2 + 0.3, posX + diameter, posY + diameter, &dot400Texture, diameter));
+        break;
+      case 500:
+        /* 100 dot */
+        /* Speed: [2, 3]  */
+        dots.push_back(new Dot(rand() % 2 + 0.2, rand() % 2 + 0.2, posX + diameter, posY + diameter, &dot500Texture, diameter));
+        break;
+      case 700:
+        /* 100 dot */
+        /* Speed: [2, 3]  */
+        dots.push_back(new Dot(rand() % 2 + 0.1, rand() % 2 + 0.1, posX + diameter, posY + diameter, &dot700Texture, diameter));
+        break;
+      default:
+        cout << " diameter w/o texture adding the biggest one " << diameter << "\n";
+        dots.push_back(new Dot(rand() % 2 + 0.1, rand() % 2 + 0.1, posX + diameter, posY + diameter, &dot700Texture, diameter));
+        break;
+    }
+  }
+
 
 int main( int argc, char* args[] ) {
 	if (argc < 2) {
@@ -432,39 +605,13 @@ int main( int argc, char* args[] ) {
 
   // Event handler
   SDL_Event e;
-  vector<Dot*> dots;
-
   // The dot that will be moving around on the screen
   for (int i=0; i<atoi(args[1]); i++) {
-    int size = rand() % 4;
-    switch (size) {
-      case 0:
-        /* 20 dot */
-        /* Speed: [7, 8]  */
-        dots.push_back(new Dot(rand() % 2 + 7, rand() % 2 + 7, i*100 + 20, i*100 + 20, &dot20Texture, 20));
-        break;
-      case 1:
-        /* 40 dot */
-        /* Speed: [5, 6]  */
-        dots.push_back(new Dot(rand() % 2 + 5, rand() % 2 + 5, i*100 + 40, i*100 + 40, &dot40Texture, 40));
-        break;
-      case 2:
-        /* 80 dot */
-        /* Speed: [3, 4]  */
-        dots.push_back(new Dot(rand() % 2 + 3, rand() % 2 + 3, i*100 + 80, i*100 + 80, &dot80Texture, 80));
-        break;
-      case 3:
-        /* 160 dot */
-        /* Speed: [1, 2]  */
-        dots.push_back(new Dot(rand() % 2 + 1, rand() % 2 + 1, i*100 + 160, i*100 + 160, &dot160Texture, 160));
-        break;
-      
-      default:
-        break;
-    }
-    // dots.push_back(new Dot(rand() % 5 + 1, rand() % 5 + 1, i*100 + 20, i*100 + 20));
+    int diameter = (rand() % 4 + 1) * 20;
+    
+    cout << "diameter " << diameter << "   pos   " << i*100 <<  "\n";
+    createNewDot(diameter, i*100, i*100);
   }
-  // Dot otherdot(rand() % 5 + 1, rand() % 5 + 1, 100 + 20, 100 + 20);
 
   // While application is running
   while(!quit) {
@@ -483,7 +630,24 @@ int main( int argc, char* args[] ) {
       // For every other dot
       for (size_t j = i + 1; j < dots.size(); j++) {
         Dot* otherdot = dots[j];
-        dot->move(otherdot -> getCollider(otherdot));
+
+        Circle* otherDotCollider = otherdot -> getCollider(otherdot);
+        Circle* currentCollider = dot -> getCollider(dot);
+
+        dot->move(otherDotCollider);
+
+        if (checkCollision(otherDotCollider, currentCollider)) {
+            if (otherDotCollider -> r !=  currentCollider -> r) {
+              dots.erase(dots.begin() + j);
+              dots.erase(dots.begin() + i);
+
+              int newDiameter = (otherDotCollider -> r) * 2 + (currentCollider -> r) * 2;
+              cout << "newDiameter  " << newDiameter << "\n";
+
+              createNewDot(newDiameter, dot->getPosX() - newDiameter, dot->getPosY() - newDiameter);
+            }
+        }
+
       }
       if (i + 1 == dots.size()) {
         dot->move();
