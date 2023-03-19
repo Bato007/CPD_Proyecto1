@@ -254,15 +254,19 @@ int LTexture::getHeight()
 }
 
 
-Dot::Dot(int x, int y, int posX, int posY, LTexture* texture)
+Dot::Dot(int x, int y, int posX, int posY, LTexture* texture, int diameter)
 {
     //Initialize the offsets
     mPosX = posX;
     mPosY = posY;
 
+		// Initialize size
+		dotWidth = diameter;
+		dotHeight = diameter;
+
     //Set collision circle size
     mCollider = new Circle();
-    mCollider->r = DOT_WIDTH / 2;
+    mCollider->r = dotWidth / 2;
     mCollider->x = posX;
     mCollider->y = posY;
 
@@ -316,7 +320,7 @@ void Dot::move()
     mPosX += mVelX;
 
     //If the dot went too far to the left or right
-    if( ( mPosX < 0 ) || ( mPosX + DOT_WIDTH > SCREEN_WIDTH ) )
+    if( ( mPosX - (dotWidth / 2) < 0 ) || ( mPosX + (dotWidth / 2) > SCREEN_WIDTH ) )
     {
         //Move back
         mVelX = -mVelX;
@@ -326,7 +330,7 @@ void Dot::move()
     mPosY += mVelY;
 
     //If the dot went too far up or down
-    if( ( mPosY < 0 ) || ( mPosY + DOT_HEIGHT > SCREEN_HEIGHT ) )
+    if( ( mPosY - (dotHeight / 2) < 0 ) || ( mPosY + (dotHeight / 2) > SCREEN_HEIGHT ) )
     {
         //Move back
 		mVelY = -mVelY;
@@ -490,28 +494,28 @@ int main( int argc, char* args[] )
 
 			//The dot that will be moving around on the screen
 			for (int i=0; i<atoi(args[1]); i++) {
-				int size = rand() % 4;
+				int size = 3;
 				switch (size)
 				{
 				case 0:
 					/* 20 dot */
 					/* Speed: [7, 8]  */
-					dots.push_back(new Dot(rand() % 2 + 7, rand() % 2 + 7, i*100 + 20, i*100 + 20, &dot20Texture));
+					dots.push_back(new Dot(rand() % 2 + 7, rand() % 2 + 7, i*100 + 20, i*100 + 20, &dot20Texture, 20));
 					break;
 				case 1:
 					/* 40 dot */
 					/* Speed: [5, 6]  */
-					dots.push_back(new Dot(rand() % 2 + 5, rand() % 2 + 5, i*100 + 20, i*100 + 20, &dot40Texture));
+					dots.push_back(new Dot(rand() % 2 + 5, rand() % 2 + 5, i*100 + 40, i*100 + 40, &dot40Texture, 40));
 					break;
 				case 2:
 					/* 80 dot */
 					/* Speed: [3, 4]  */
-					dots.push_back(new Dot(rand() % 2 + 3, rand() % 2 + 3, i*100 + 20, i*100 + 20, &dot80Texture));
+					dots.push_back(new Dot(rand() % 2 + 3, rand() % 2 + 3, i*100 + 80, i*100 + 80, &dot80Texture, 80));
 					break;
 				case 3:
 					/* 160 dot */
 					/* Speed: [1, 2]  */
-					dots.push_back(new Dot(rand() % 2 + 1, rand() % 2 + 1, i*100 + 20, i*100 + 20, &dot160Texture));
+					dots.push_back(new Dot(rand() % 2 + 1, rand() % 2 + 1, i*100 + 160, i*100 + 160, &dot160Texture, 160));
 					break;
 				
 				default:

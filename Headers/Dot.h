@@ -11,14 +11,14 @@ class Dot
 {
     public:
 		//The dimensions of the dot
-		static const int DOT_WIDTH = 20;
-		static const int DOT_HEIGHT = 20;
+		int dotWidth;
+		int dotHeight;
 
 		//Maximum axis velocity of the dot
 		static const int DOT_VEL = 10;
 
 		//Initializes the variables
-		Dot(int, int, int, int, LTexture*);
+		Dot(int, int, int, int, LTexture*, int);
 
 		//Moves the dot
 		void move(Circle*);
