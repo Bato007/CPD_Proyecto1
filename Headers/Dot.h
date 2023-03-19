@@ -1,3 +1,4 @@
+#include "LTexture.h"
 
 //A circle stucture
 struct Circle
@@ -17,7 +18,7 @@ class Dot
 		static const int DOT_VEL = 10;
 
 		//Initializes the variables
-		Dot(int, int, int, int);
+		Dot(int, int, int, int, LTexture*);
 
 		//Moves the dot
 		void move(Circle*);
@@ -51,4 +52,7 @@ class Dot
     
 		//Moves the collision circle relative to the dot's offset
 		void shiftColliders();
+
+		// Texture
+		LTexture* dotTexture;
 };

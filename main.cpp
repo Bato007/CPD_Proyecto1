@@ -17,52 +17,6 @@ const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
 
-//Texture wrapper class
-class LTexture
-{
-	public:
-		//Initializes variables
-		LTexture();
-
-		//Deallocates memory
-		~LTexture();
-
-		//Loads image at specified path
-		bool loadFromFile( std::string path );
-		
-		#if defined(SDL_TTF_MAJOR_VERSION)
-		//Creates image from font string
-		bool loadFromRenderedText( std::string textureText, SDL_Color textColor );
-		#endif
-
-		//Deallocates texture
-		void free();
-
-		//Set color modulation
-		void setColor( Uint8 red, Uint8 green, Uint8 blue );
-
-		//Set blending
-		void setBlendMode( SDL_BlendMode blending );
-
-		//Set alpha modulation
-		void setAlpha( Uint8 alpha );
-		
-		//Renders texture at given point
-		void render( int x, int y, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE );
-
-		//Gets image dimensions
-		int getWidth();
-		int getHeight();
-
-	private:
-		//The actual hardware texture
-		SDL_Texture* mTexture;
-
-		//Image dimensions
-		int mWidth;
-		int mHeight;
-};
-
 //The application time based timer
 class LTimer
 {
@@ -146,6 +100,10 @@ SDL_Renderer* gRenderer = NULL;
 
 //Scene textures
 LTexture gDotTexture;
+LTexture dot20Texture;
+LTexture dot40Texture;
+LTexture dot80Texture;
+LTexture dot160Texture;
 
 LTexture::LTexture()
 {
@@ -296,7 +254,7 @@ int LTexture::getHeight()
 }
 
 
-Dot::Dot(int x, int y, int posX, int posY)
+Dot::Dot(int x, int y, int posX, int posY, LTexture* texture)
 {
     //Initialize the offsets
     mPosX = posX;
@@ -311,6 +269,9 @@ Dot::Dot(int x, int y, int posX, int posY)
     //Initialize the velocity
     mVelX = x;
     mVelY = y;
+
+		// Initialize texture
+		dotTexture = texture;
 }
 
 void Dot::move(Circle* circle)
@@ -377,7 +338,7 @@ void Dot::move()
 void Dot::render()
 {
     //Show the dot
-	gDotTexture.render( mPosX - mCollider->r, mPosY - mCollider->r );
+	dotTexture->render( mPosX - mCollider->r, mPosY - mCollider->r );
 }
 
 Circle* Dot::getCollider(Dot *otherdot)
@@ -454,7 +415,25 @@ bool loadMedia()
 	bool success = true;
 
 	//Load dot texture
-	if( !gDotTexture.loadFromFile( "./dot.bmp" ) )
+	if( !dot20Texture.loadFromFile( "./dotsTextures/dot20.bmp" )	)
+	{
+		printf( "Failed to load dot20 texture!\n" );
+		success = false;
+	}
+
+	if( !dot40Texture.loadFromFile( "./dotsTextures/dot40.bmp" ) )
+	{
+		printf( "Failed to load dot texture!\n" );
+		success = false;
+	}
+
+	if( !dot80Texture.loadFromFile( "./dotsTextures/dot80.bmp" ) )
+	{
+		printf( "Failed to load dot texture!\n" );
+		success = false;
+	}
+
+	if( !dot160Texture.loadFromFile( "./dotsTextures/dot160.bmp" ) )
 	{
 		printf( "Failed to load dot texture!\n" );
 		success = false;
@@ -466,7 +445,10 @@ bool loadMedia()
 void close()
 {
 	//Free loaded images
-	gDotTexture.free();
+	dot20Texture.free();
+	dot40Texture.free();
+	dot80Texture.free();
+	dot160Texture.free();
 
 	//Destroy window	
 	SDL_DestroyRenderer( gRenderer );
@@ -481,6 +463,10 @@ void close()
 
 int main( int argc, char* args[] )
 {
+	if (argc < 2) {
+		printf("No se han ingresado suficientes argumentos");
+		exit(-1);
+	}
 	//Start up SDL and create window
 	if( !init() )
 	{
@@ -504,8 +490,34 @@ int main( int argc, char* args[] )
 
 			//The dot that will be moving around on the screen
 			for (int i=0; i<atoi(args[1]); i++) {
-				Dot* dot = new Dot(rand() % 5 + 1, rand() % 5 + 1, i*100 + 20, i*100 + 20);
-				dots.push_back(dot);
+				int size = rand() % 4;
+				switch (size)
+				{
+				case 0:
+					/* 20 dot */
+					/* Speed: [7, 8]  */
+					dots.push_back(new Dot(rand() % 2 + 7, rand() % 2 + 7, i*100 + 20, i*100 + 20, &dot20Texture));
+					break;
+				case 1:
+					/* 40 dot */
+					/* Speed: [5, 6]  */
+					dots.push_back(new Dot(rand() % 2 + 5, rand() % 2 + 5, i*100 + 20, i*100 + 20, &dot40Texture));
+					break;
+				case 2:
+					/* 80 dot */
+					/* Speed: [3, 4]  */
+					dots.push_back(new Dot(rand() % 2 + 3, rand() % 2 + 3, i*100 + 20, i*100 + 20, &dot80Texture));
+					break;
+				case 3:
+					/* 160 dot */
+					/* Speed: [1, 2]  */
+					dots.push_back(new Dot(rand() % 2 + 1, rand() % 2 + 1, i*100 + 20, i*100 + 20, &dot160Texture));
+					break;
+				
+				default:
+					break;
+				}
+				// dots.push_back(new Dot(rand() % 5 + 1, rand() % 5 + 1, i*100 + 20, i*100 + 20));
 			}
 			// Dot otherdot(rand() % 5 + 1, rand() % 5 + 1, 100 + 20, 100 + 20);
 
