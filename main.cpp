@@ -256,8 +256,8 @@ Dot::Dot(int x, int y, int posX, int posY, LTexture* texture, int diameter) {
   mCollider->y = posY;
 
   // Initialize the velocity
-  mVelX = x;
-  mVelY = y;
+  mVelX = max(1, x);
+  mVelY = max(1, y);
 
   // Initialize texture
   dotTexture = texture;
@@ -491,6 +491,150 @@ void close() {
 	SDL_Quit();
 }
 
+// Overload to set defined velocities
+void createNewDot(int diameter, int posX, int posY, int velX, int velY) {
+	int newPosX = min(max(diameter / 2, posX), SCREEN_WIDTH - (diameter / 2));
+	int newPosY = min(max(diameter / 2, posY), SCREEN_HEIGHT - (diameter / 2));
+  switch (diameter) {
+    case 20:
+      /* 20 dot */
+      /* Speed: [7, 8]  */
+      dots.push_back(new Dot(velX, velY,
+				newPosX,
+				newPosY,
+				&dot20Texture, diameter));
+      break;
+    case 40:
+      /* 40 dot */
+      /* Speed: [5, 6]  */
+      dots.push_back(new Dot(velX, velY,
+				newPosX,
+				newPosY,
+				&dot40Texture, diameter));
+      break;
+    case 60:
+      /* 60 dot */
+      /* Speed: [4, 5]  */
+     	dots.push_back(new Dot(velX, velY,
+				newPosX,
+				newPosY,
+				&dot60Texture, diameter));
+      break;
+    case 80:
+      /* 80 dot */
+      /* Speed: [3, 4]  */
+      dots.push_back(new Dot(velX, velY,
+				newPosX,
+				newPosY,
+				&dot80Texture, diameter));
+      break;
+    case 100:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      dots.push_back(new Dot(velX, velY,
+				newPosX,
+				newPosY,
+				&dot100Texture, diameter));
+      break;
+    case 120:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      dots.push_back(new Dot(velX, velY,
+				newPosX,
+				newPosY,
+				&dot120Texture, diameter));
+      break;
+    case 140:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      dots.push_back(new Dot(velX, velY,
+				newPosX,
+				newPosY,
+				&dot140Texture, diameter));
+      break;
+    case 160:
+      /* 160 dot */
+      /* Speed: [1, 2]  */
+      dots.push_back(new Dot(velX, velY,
+				newPosX,
+				newPosY,
+				&dot160Texture, diameter));
+      break;
+    case 180:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      dots.push_back(new Dot(velX, velY,
+				newPosX,
+				newPosY,
+				&dot180Texture, diameter));
+      break;
+    case 200:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      dots.push_back(new Dot(velX, velY,
+				newPosX,
+				newPosY,
+				&dot200Texture, diameter));
+      break;
+    case 220:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      dots.push_back(new Dot(velX, velY,
+				newPosX,
+				newPosY,
+				&dot220Texture, diameter));
+      break;
+    case 240:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      dots.push_back(new Dot(velX, velY,
+				newPosX,
+				newPosY,
+				&dot240Texture, diameter));
+      break;
+    case 260:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      dots.push_back(new Dot(velX, velY,
+				newPosX,
+				newPosY,
+				&dot260Texture, diameter));
+      break;
+    case 400:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      dots.push_back(new Dot(velX, velY,
+				newPosX,
+				newPosY,
+				&dot400Texture, diameter));
+      break;
+    case 500:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      dots.push_back(new Dot(velX, velY,
+				newPosX,
+				newPosY,
+				&dot500Texture, diameter));
+      break;
+    case 700:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      dots.push_back(new Dot(velX, velY,
+				newPosX,
+				newPosY,
+				&dot700Texture, diameter));
+      break;
+    default:
+      cout << " diameter w/o texture adding the biggest one " << diameter << "\n";
+      dots.push_back(new Dot(velX, velY,
+				newPosX,
+				newPosY,
+				&dot700Texture, diameter));
+      break;
+  }
+}
+
+// Overload to set random velocities
 void createNewDot(int diameter, int posX, int posY) {
 	int newPosX = min(max(diameter / 2, posX), SCREEN_WIDTH - (diameter / 2));
 	int newPosY = min(max(diameter / 2, posY), SCREEN_HEIGHT - (diameter / 2));
@@ -692,9 +836,13 @@ int main( int argc, char* args[] ) {
             dots.erase(dots.begin() + i);
 
             int newDiameter = (otherDotCollider -> r + currentCollider -> r) * 2;
+						if (newDiameter > 700)
+							newDiameter = 700;
             int newRadius = newDiameter / 2;
             int newPosX = dot->getPosX(), newPosY = dot->getPosY();
 
+						int newSpeedX = ((dot->dotWidth / 2) * dot->getVelX() + (otherdot->dotWidth / 2) * otherdot->getVelX()) / newRadius;
+						int newSpeedY = ((dot->dotWidth / 2) * dot->getVelY() + (otherdot->dotWidth / 2) * otherdot->getVelY()) / newRadius;
 
             cout << "pre - pos x" << newPosX << "\n";
             cout << "pre -pos y" << newPosY << "\n";
@@ -711,7 +859,7 @@ int main( int argc, char* args[] ) {
             cout << "pos y" << newPosY << "\n";
             // SCREEN_WIDTH
 
-            createNewDot(newDiameter, newPosX, newPosY);
+            createNewDot(newDiameter, newPosX, newPosY, newSpeedX, newSpeedY);
           }
         }
 
