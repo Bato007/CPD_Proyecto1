@@ -11,8 +11,8 @@
 using namespace std;
 
 // Screen dimension constants
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
+const int SCREEN_WIDTH = 1080;
+const int SCREEN_HEIGHT = 720;
 
 vector<Dot*> dots;
 
@@ -492,90 +492,143 @@ void close() {
 }
 
 void createNewDot(int diameter, int posX, int posY) {
+	int newPosX = min(max(diameter / 2, posX), SCREEN_WIDTH - (diameter / 2));
+	int newPosY = min(max(diameter / 2, posY), SCREEN_HEIGHT - (diameter / 2));
   switch (diameter) {
     case 20:
       /* 20 dot */
       /* Speed: [7, 8]  */
-      dots.push_back(new Dot(rand() % 2 + 4, rand() % 2 + 4, posX  + diameter, posY + diameter, &dot20Texture, diameter));
+      dots.push_back(new Dot(rand() % 2 + 4, rand() % 2 + 4,
+				newPosX,
+				newPosY,
+				&dot20Texture, diameter));
       break;
     case 40:
       /* 40 dot */
       /* Speed: [5, 6]  */
-      dots.push_back(new Dot(rand() % 2 + 3.8, rand() % 2 + 3.8, posX + diameter, posY + diameter, &dot40Texture, diameter));
+      dots.push_back(new Dot(rand() % 2 + 3.8, rand() % 2 + 3.8,
+				newPosX,
+				newPosY,
+				&dot40Texture, diameter));
       break;
     case 60:
       /* 60 dot */
       /* Speed: [4, 5]  */
-      dots.push_back(new Dot(rand() % 2 + 3.4, rand() % 2 + 3.4, posX + diameter, posY + diameter, &dot60Texture, diameter));
+      dots.push_back(new Dot(rand() % 2 + 3.4, rand() % 2 + 3.4,
+				newPosX,
+				newPosY,
+				&dot60Texture, diameter));
       break;
     case 80:
       /* 80 dot */
       /* Speed: [3, 4]  */
-      dots.push_back(new Dot(rand() % 2 + 3, rand() % 2 + 3, posX + diameter, posY + diameter, &dot80Texture, diameter));
+      dots.push_back(new Dot(rand() % 2 + 3, rand() % 2 + 3,
+				newPosX,
+				newPosY,
+				&dot80Texture, diameter));
       break;
     case 100:
       /* 100 dot */
       /* Speed: [2, 3]  */
-      dots.push_back(new Dot(rand() % 2 + 2.5, rand() % 2 + 2.5, posX + diameter, posY + diameter, &dot100Texture, diameter));
+      dots.push_back(new Dot(rand() % 2 + 2.5, rand() % 2 + 2.5,
+				newPosX,
+				newPosY,
+				&dot100Texture, diameter));
       break;
     case 120:
       /* 100 dot */
       /* Speed: [2, 3]  */
-      dots.push_back(new Dot(rand() % 2 + 2, rand() % 2 + 2, posX + diameter, posY + diameter, &dot120Texture, diameter));
+      dots.push_back(new Dot(rand() % 2 + 2, rand() % 2 + 2,
+				newPosX,
+				newPosY,
+				&dot120Texture, diameter));
       break;
     case 140:
       /* 100 dot */
       /* Speed: [2, 3]  */
-      dots.push_back(new Dot(rand() % 2 + 1.8, rand() % 2 + 1.8, posX + diameter, posY + diameter, &dot140Texture, diameter));
+      dots.push_back(new Dot(rand() % 2 + 1.8, rand() % 2 + 1.8,
+				newPosX,
+				newPosY,
+				&dot140Texture, diameter));
       break;
     case 160:
       /* 160 dot */
       /* Speed: [1, 2]  */
-      dots.push_back(new Dot(rand() % 2 + 1.5, rand() % 2 + 1.5, posX + diameter, posY + diameter, &dot160Texture, diameter));
+      dots.push_back(new Dot(rand() % 2 + 1.5, rand() % 2 + 1.5,
+				newPosX,
+				newPosY,
+				&dot160Texture, diameter));
       break;
     case 180:
       /* 100 dot */
       /* Speed: [2, 3]  */
-      dots.push_back(new Dot(rand() % 2 + 1, rand() % 2 + 1, posX + diameter, posY + diameter, &dot180Texture, diameter));
+      dots.push_back(new Dot(rand() % 2 + 1, rand() % 2 + 1,
+				newPosX,
+				newPosY,
+				&dot180Texture, diameter));
       break;
     case 200:
       /* 100 dot */
       /* Speed: [2, 3]  */
-      dots.push_back(new Dot(rand() % 2 + 0.5, rand() % 2 + 0.5, posX + diameter, posY + diameter, &dot200Texture, diameter));
+      dots.push_back(new Dot(rand() % 2 + 0.5, rand() % 2 + 0.5,
+				newPosX,
+				newPosY,
+				&dot200Texture, diameter));
       break;
     case 220:
       /* 100 dot */
       /* Speed: [2, 3]  */
-      dots.push_back(new Dot(rand() % 2 + 0.4, rand() % 2 + 0.4, posX + diameter, posY + diameter, &dot220Texture, diameter));
+      dots.push_back(new Dot(rand() % 2 + 0.4, rand() % 2 + 0.4,
+				newPosX,
+				newPosY,
+				&dot220Texture, diameter));
       break;
     case 240:
       /* 100 dot */
       /* Speed: [2, 3]  */
-      dots.push_back(new Dot(rand() % 2 + 0.35, rand() % 2 + 0.35, posX + diameter, posY + diameter, &dot240Texture, diameter));
+      dots.push_back(new Dot(rand() % 2 + 0.35, rand() % 2 + 0.35,
+				newPosX,
+				newPosY,
+				&dot240Texture, diameter));
       break;
     case 260:
       /* 100 dot */
       /* Speed: [2, 3]  */
-      dots.push_back(new Dot(rand() % 2 + 0.4, rand() % 2 + 0.4, posX + diameter, posY + diameter, &dot260Texture, diameter));
+      dots.push_back(new Dot(rand() % 2 + 0.4, rand() % 2 + 0.4,
+				newPosX,
+				newPosY,
+				&dot260Texture, diameter));
       break;
     case 400:
       /* 100 dot */
       /* Speed: [2, 3]  */
-      dots.push_back(new Dot(rand() % 2 + 0.3, rand() % 2 + 0.3, posX + diameter, posY + diameter, &dot400Texture, diameter));
+      dots.push_back(new Dot(rand() % 2 + 0.3, rand() % 2 + 0.3,
+				newPosX,
+				newPosY,
+				&dot400Texture, diameter));
       break;
     case 500:
       /* 100 dot */
       /* Speed: [2, 3]  */
-      dots.push_back(new Dot(rand() % 2 + 0.2, rand() % 2 + 0.2, posX + diameter, posY + diameter, &dot500Texture, diameter));
+      dots.push_back(new Dot(rand() % 2 + 0.2, rand() % 2 + 0.2,
+				newPosX,
+				newPosY,
+				&dot500Texture, diameter));
       break;
     case 700:
       /* 100 dot */
       /* Speed: [2, 3]  */
-      dots.push_back(new Dot(rand() % 2 + 0.1, rand() % 2 + 0.1, posX + diameter, posY + diameter, &dot700Texture, diameter));
+      dots.push_back(new Dot(rand() % 2 + 0.1, rand() % 2 + 0.1,
+				newPosX,
+				newPosY,
+				&dot700Texture, diameter));
       break;
     default:
       cout << " diameter w/o texture adding the biggest one " << diameter << "\n";
-      dots.push_back(new Dot(rand() % 2 + 0.1, rand() % 2 + 0.1, posX + diameter, posY + diameter, &dot700Texture, diameter));
+      dots.push_back(new Dot(rand() % 2 + 0.1, rand() % 2 + 0.1,
+				newPosX,
+				newPosY,
+				&dot700Texture, diameter));
       break;
   }
 }

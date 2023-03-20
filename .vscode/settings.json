@@ -1,8 +1,11 @@
 {
     "files.associations": {
+        "*.css": "css",
         "vector": "cpp",
         "xstring": "cpp",
         "iostream": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "limits": "cpp",
+        "utility": "cpp"
     }
 }
