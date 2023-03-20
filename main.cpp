@@ -721,88 +721,88 @@ int main( int argc, char* args[] ) {
       // Move the dot
       Dot* dot = dots[i];
       // For every other dot
-      for (size_t j = i + 1; j < dots.size(); j++) {
-        Dot* otherdot = dots[j];
+      for (size_t j = 0; j < dots.size(); j++) {
+        if (i != j) {
+          Dot* otherdot = dots[j];
 
-        Circle* otherDotCollider = otherdot -> getCollider(otherdot);
-        Circle* currentCollider = dot -> getCollider(dot);
+          Circle* otherDotCollider = otherdot -> getCollider(otherdot);
+          Circle* currentCollider = dot -> getCollider(dot);
 
-        dot->move(otherDotCollider);
+          dot->move(otherDotCollider);
+          otherdot->move(currentCollider);
 
-        if (checkCollision(otherDotCollider, currentCollider) || checkCollision(currentCollider, otherDotCollider)) {
-          /*
-          If there is no velocity on x and y, it means one of them is the star
-          */
-          if (((dot -> getVelX() == 0 && dot -> getVelY() == 0) || (otherdot -> getVelX() == 0 && otherdot -> getVelY() == 0))) {
-            Dot* currentDot = otherdot;
-            Dot* star = dot;
-            if (otherdot -> getVelX() == 0 && otherdot -> getVelY() == 0) {
-              currentDot = dot;
-              star = otherdot;
-            }
+          if (checkCollision(otherDotCollider, currentCollider) || checkCollision(currentCollider, otherDotCollider)) {
+            /*
+            If there is no velocity on x and y, it means one of them is the star
+            */
+            if (((dot -> getVelX() == 0 && dot -> getVelY() == 0) || (otherdot -> getVelX() == 0 && otherdot -> getVelY() == 0))) {
+              Dot* currentDot = otherdot;
+              Dot* star = dot;
+              if (otherdot -> getVelX() == 0 && otherdot -> getVelY() == 0) {
+                currentDot = dot;
+                star = otherdot;
+              }
 
-            if (currentDot -> getCollider(currentDot) -> r >= star -> getCollider(star) -> r) {
+              if (currentDot -> getCollider(currentDot) -> r >= star -> getCollider(star) -> r) {
+                dots.erase(dots.begin() + j);
+                dots.erase(dots.begin() + i);
+
+                int newDiameter = currentDot -> getCollider(currentDot) -> r;
+
+                /*
+                Getting an available texture
+                */
+                if (newDiameter % 20 != 0) {
+                  newDiameter += 10;
+                }
+                newDiameter = getDiameter(newDiameter);
+
+                int newPosX = currentDot->getPosX(), newPosY = currentDot->getPosY();
+                if (newPosX + newDiameter >= SCREEN_WIDTH) {
+                  newPosX = newPosX - (newPosX + newDiameter - SCREEN_WIDTH - 5);
+                }
+
+                if (newPosY + newDiameter >= SCREEN_HEIGHT) {
+                  newPosY = newPosY - (newPosY + newDiameter - SCREEN_HEIGHT - 5);
+                }
+
+                // Creating two new dots
+                createNewDot(newDiameter, newPosX, newPosY);
+                createNewDot(newDiameter, newPosX + newDiameter, newPosY + newDiameter);
+
+                // Creating star
+                int random = SCREEN_WIDTH - 400;
+                int posX = rand() % random;
+                int posY= rand() % random;
+                dots.push_back(new Dot(posX, posY));
+              }
+            } else if (otherDotCollider -> r !=  currentCollider -> r) {
               dots.erase(dots.begin() + j);
               dots.erase(dots.begin() + i);
 
-              int newDiameter = currentDot -> getCollider(currentDot) -> r;
-
-              /*
-              Getting an available texture
-              */
-              if (newDiameter % 20 != 0) {
-                newDiameter += 10;
-              }
+              int newDiameter = (otherDotCollider -> r + currentCollider -> r) * 2;
               newDiameter = getDiameter(newDiameter);
 
-              int newPosX = currentDot->getPosX(), newPosY = currentDot->getPosY();
-              if (newPosX + newDiameter >= SCREEN_WIDTH) {
-                newPosX = newPosX - (newPosX + newDiameter - SCREEN_WIDTH - 5);
+              int newRadius = newDiameter / 2;
+              int newPosX = dot->getPosX(), newPosY = dot->getPosY();
+
+              int newSpeedX = ((dot->dotWidth / 2) * dot->getVelX() + (otherdot->dotWidth / 2) * otherdot->getVelX()) / newRadius;
+              int newSpeedY = ((dot->dotWidth / 2) * dot->getVelY() + (otherdot->dotWidth / 2) * otherdot->getVelY()) / newRadius;
+
+              if (newPosX + newRadius >= SCREEN_WIDTH) {
+                newPosX = newPosX - (newPosX + newRadius - SCREEN_WIDTH - 5);
               }
 
-              if (newPosY + newDiameter >= SCREEN_HEIGHT) {
-                newPosY = newPosY - (newPosY + newDiameter - SCREEN_HEIGHT - 5);
+              if (newPosY + newRadius >= SCREEN_HEIGHT) {
+                newPosY = newPosY - (newPosY + newRadius - SCREEN_HEIGHT - 5);
               }
 
-              // Creating two new dots
-              createNewDot(newDiameter, newPosX, newPosY);
-              createNewDot(newDiameter, newPosX + newDiameter, newPosY + newDiameter);
-
-              // Creating star
-              int random = SCREEN_WIDTH - 400;
-              int posX = rand() % random;
-              int posY= rand() % random;
-              dots.push_back(new Dot(posX, posY));
+              createNewDot(newDiameter, newPosX, newPosY, newSpeedX, newSpeedY);
             }
-          } else if (otherDotCollider -> r !=  currentCollider -> r) {
-            dots.erase(dots.begin() + j);
-            dots.erase(dots.begin() + i);
-
-            int newDiameter = (otherDotCollider -> r + currentCollider -> r) * 2;
-            newDiameter = getDiameter(newDiameter);
-
-            int newRadius = newDiameter / 2;
-            int newPosX = dot->getPosX(), newPosY = dot->getPosY();
-
-						int newSpeedX = ((dot->dotWidth / 2) * dot->getVelX() + (otherdot->dotWidth / 2) * otherdot->getVelX()) / newRadius;
-						int newSpeedY = ((dot->dotWidth / 2) * dot->getVelY() + (otherdot->dotWidth / 2) * otherdot->getVelY()) / newRadius;
-
-            if (newPosX + newRadius >= SCREEN_WIDTH) {
-              newPosX = newPosX - (newPosX + newRadius - SCREEN_WIDTH - 5);
-            }
-
-            if (newPosY + newRadius >= SCREEN_HEIGHT) {
-              newPosY = newPosY - (newPosY + newRadius - SCREEN_HEIGHT - 5);
-            }
-
-            createNewDot(newDiameter, newPosX, newPosY, newSpeedX, newSpeedY);
           }
+
         }
 
-      }
-
-      if (i + 1 == dots.size()) {
-        dot->move();
       }
     }
 
