@@ -105,6 +105,7 @@ LTexture dot200Texture;
 LTexture dot220Texture;
 LTexture dot240Texture;
 LTexture dot260Texture;
+LTexture dot320Texture;
 LTexture dot400Texture;
 LTexture dot500Texture;
 LTexture dot700Texture;
@@ -442,6 +443,11 @@ bool loadMedia() {
 		success = false;
 	}
 
+	if (!dot320Texture.loadFromFile("./dotsTextures/dot320.bmp")) {
+    cout << "[ERROR]: Failed to load dot250 texture" << endl;
+		success = false;
+	}
+
 	if (!dot400Texture.loadFromFile("./dotsTextures/dot400.bmp")) {
     cout << "[ERROR]: Failed to load dot200 texture" << endl;
 		success = false;
@@ -476,6 +482,7 @@ void close() {
 	dot220Texture.free();
 	dot240Texture.free();
 	dot260Texture.free();
+	dot320Texture.free();
 	dot400Texture.free();
 	dot500Texture.free();
 	dot700Texture.free();
@@ -600,6 +607,14 @@ void createNewDot(int diameter, int posX, int posY, int velX, int velY) {
 				newPosY,
 				&dot260Texture, diameter));
       break;
+    case 320:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      dots.push_back(new Dot(velX, velY,
+				newPosX,
+				newPosY,
+				&dot320Texture, diameter));
+      break;
     case 400:
       /* 100 dot */
       /* Speed: [2, 3]  */
@@ -625,11 +640,6 @@ void createNewDot(int diameter, int posX, int posY, int velX, int velY) {
 				&dot700Texture, diameter));
       break;
     default:
-      cout << " diameter w/o texture adding the biggest one " << diameter << "\n";
-      dots.push_back(new Dot(velX, velY,
-				newPosX,
-				newPosY,
-				&dot700Texture, diameter));
       break;
   }
 }
@@ -642,7 +652,7 @@ void createNewDot(int diameter, int posX, int posY) {
     case 20:
       /* 20 dot */
       /* Speed: [7, 8]  */
-      dots.push_back(new Dot(rand() % 2 + 4, rand() % 2 + 4,
+      dots.push_back(new Dot(rand() % 2 + 2.6, rand() % 2 + 3,
 				newPosX,
 				newPosY,
 				&dot20Texture, diameter));
@@ -650,7 +660,7 @@ void createNewDot(int diameter, int posX, int posY) {
     case 40:
       /* 40 dot */
       /* Speed: [5, 6]  */
-      dots.push_back(new Dot(rand() % 2 + 3.8, rand() % 2 + 3.8,
+      dots.push_back(new Dot(rand() % 2 + 2.4, rand() % 2 + 2.8,
 				newPosX,
 				newPosY,
 				&dot40Texture, diameter));
@@ -658,7 +668,7 @@ void createNewDot(int diameter, int posX, int posY) {
     case 60:
       /* 60 dot */
       /* Speed: [4, 5]  */
-      dots.push_back(new Dot(rand() % 2 + 3.4, rand() % 2 + 3.4,
+      dots.push_back(new Dot(rand() % 2 + 2.2, rand() % 2 + 2.4,
 				newPosX,
 				newPosY,
 				&dot60Texture, diameter));
@@ -666,7 +676,7 @@ void createNewDot(int diameter, int posX, int posY) {
     case 80:
       /* 80 dot */
       /* Speed: [3, 4]  */
-      dots.push_back(new Dot(rand() % 2 + 3, rand() % 2 + 3,
+      dots.push_back(new Dot(rand() % 2 + 2, rand() % 2 + 3,
 				newPosX,
 				newPosY,
 				&dot80Texture, diameter));
@@ -674,7 +684,7 @@ void createNewDot(int diameter, int posX, int posY) {
     case 100:
       /* 100 dot */
       /* Speed: [2, 3]  */
-      dots.push_back(new Dot(rand() % 2 + 2.5, rand() % 2 + 2.5,
+      dots.push_back(new Dot(rand() % 2 + 1.8, rand() % 2 + 2.5,
 				newPosX,
 				newPosY,
 				&dot100Texture, diameter));
@@ -682,7 +692,7 @@ void createNewDot(int diameter, int posX, int posY) {
     case 120:
       /* 100 dot */
       /* Speed: [2, 3]  */
-      dots.push_back(new Dot(rand() % 2 + 2, rand() % 2 + 2,
+      dots.push_back(new Dot(rand() % 2 + 1.6, rand() % 2 + 2,
 				newPosX,
 				newPosY,
 				&dot120Texture, diameter));
@@ -690,7 +700,7 @@ void createNewDot(int diameter, int posX, int posY) {
     case 140:
       /* 100 dot */
       /* Speed: [2, 3]  */
-      dots.push_back(new Dot(rand() % 2 + 1.8, rand() % 2 + 1.8,
+      dots.push_back(new Dot(rand() % 2 + 1.4, rand() % 2 + 1.8,
 				newPosX,
 				newPosY,
 				&dot140Texture, diameter));
@@ -698,7 +708,7 @@ void createNewDot(int diameter, int posX, int posY) {
     case 160:
       /* 160 dot */
       /* Speed: [1, 2]  */
-      dots.push_back(new Dot(rand() % 2 + 1.5, rand() % 2 + 1.5,
+      dots.push_back(new Dot(rand() % 2 + 1.2, rand() % 2 + 1.5,
 				newPosX,
 				newPosY,
 				&dot160Texture, diameter));
@@ -743,6 +753,14 @@ void createNewDot(int diameter, int posX, int posY) {
 				newPosY,
 				&dot260Texture, diameter));
       break;
+    case 320:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      dots.push_back(new Dot(rand() % 2 + 0.35, rand() % 2 + 0.35,
+				newPosX,
+				newPosY,
+				&dot320Texture, diameter));
+      break;
     case 400:
       /* 100 dot */
       /* Speed: [2, 3]  */
@@ -768,11 +786,6 @@ void createNewDot(int diameter, int posX, int posY) {
 				&dot700Texture, diameter));
       break;
     default:
-      cout << " diameter w/o texture adding the biggest one " << diameter << "\n";
-      dots.push_back(new Dot(rand() % 2 + 0.1, rand() % 2 + 0.1,
-				newPosX,
-				newPosY,
-				&dot700Texture, diameter));
       break;
   }
 }
@@ -803,9 +816,12 @@ int main( int argc, char* args[] ) {
   // The dot that will be moving around on the screen
   for (int i=0; i<atoi(args[1]); i++) {
     int diameter = (rand() % 4 + 1) * 20;
-    
-    cout << "diameter " << diameter << "   pos   " << i*100 <<  "\n";
-    createNewDot(diameter, i*100, i*100);
+
+    int random = SCREEN_WIDTH - diameter;
+    int posX = rand() % random;
+    int posY= rand() % random;
+    cout << "diameter " << diameter << "   pos   " << posX << ", " << posY <<   "\n";
+    createNewDot(diameter, posX, posY );
   }
 
   Uint32 oldtime = 0;
@@ -834,22 +850,32 @@ int main( int argc, char* args[] ) {
 
         dot->move(otherDotCollider);
 
-        if (checkCollision(otherDotCollider, currentCollider)) {
+        if (checkCollision(otherDotCollider, currentCollider) || checkCollision(currentCollider, otherDotCollider)) {
           if (otherDotCollider -> r !=  currentCollider -> r) {
             dots.erase(dots.begin() + j);
             dots.erase(dots.begin() + i);
 
             int newDiameter = (otherDotCollider -> r + currentCollider -> r) * 2;
-						if (newDiameter > 700)
-							newDiameter = 700;
+
+            if (newDiameter > 260) {
+              newDiameter = 320;
+            } else if (newDiameter > 400) {
+              newDiameter = 400;
+            } else if (newDiameter > 500) {
+              newDiameter = 500;
+            } else if (newDiameter > 700) {
+                newDiameter = 700;
+            }
+
+
             int newRadius = newDiameter / 2;
             int newPosX = dot->getPosX(), newPosY = dot->getPosY();
 
 						int newSpeedX = ((dot->dotWidth / 2) * dot->getVelX() + (otherdot->dotWidth / 2) * otherdot->getVelX()) / newRadius;
 						int newSpeedY = ((dot->dotWidth / 2) * dot->getVelY() + (otherdot->dotWidth / 2) * otherdot->getVelY()) / newRadius;
 
-            cout << "pre - pos x" << newPosX << "\n";
-            cout << "pre -pos y" << newPosY << "\n";
+            // cout << "pre - pos x" << newPosX << "\n";
+            // cout << "pre -pos y" << newPosY << "\n";
             if (newPosX + newRadius >= SCREEN_WIDTH) {
               newPosX = newPosX - (newPosX + newRadius - SCREEN_WIDTH - 5);
             }
@@ -858,9 +884,9 @@ int main( int argc, char* args[] ) {
               newPosY = newPosY - (newPosY + newRadius - SCREEN_HEIGHT - 5);
             }
 
-            cout << "newDiameter  " << newDiameter << "\n";
-            cout << "pos x" << newPosX << "\n";
-            cout << "pos y" << newPosY << "\n";
+            // cout << "newDiameter  " << newDiameter << "\n";
+            // cout << "pos x" << newPosX << "\n";
+            // cout << "pos y" << newPosY << "\n";
             // SCREEN_WIDTH
 
             createNewDot(newDiameter, newPosX, newPosY, newSpeedX, newSpeedY);
