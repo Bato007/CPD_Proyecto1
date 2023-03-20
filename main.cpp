@@ -808,9 +808,13 @@ int main( int argc, char* args[] ) {
     createNewDot(diameter, i*100, i*100);
   }
 
+  Uint32 oldtime = 0;
+  Uint32 newtime = 0;
+  float fps = 0.0f;
   // While application is running
   while(!quit) {
-
+    oldtime = newtime;
+    newtime = SDL_GetTicks();
     // Handle events on queue
     while(SDL_PollEvent( &e ) != 0) {
       //User requests quit
@@ -882,6 +886,9 @@ int main( int argc, char* args[] ) {
 
     // Update screen
     SDL_RenderPresent( gRenderer );
+
+    fps = 1.f / ((float)(newtime - oldtime) / 1000.f);
+    printf("FPS: %f\n", fps);
   }
 
 	// Free resources and close SDL
