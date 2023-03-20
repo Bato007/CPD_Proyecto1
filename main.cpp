@@ -721,8 +721,8 @@ int main( int argc, char* args[] ) {
       // Move the dot
       Dot* dot = dots[i];
       // For every other dot
-      for (size_t j = 0; j < dots.size(); j++) {
-        if (i != j) {
+      for (size_t j = i + 1; j < dots.size(); j++) {
+        
           Dot* otherdot = dots[j];
 
           Circle* otherDotCollider = otherdot -> getCollider(otherdot);
@@ -801,7 +801,7 @@ int main( int argc, char* args[] ) {
             }
           }
 
-        }
+        
 
       }
     }
