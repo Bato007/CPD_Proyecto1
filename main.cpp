@@ -109,6 +109,7 @@ LTexture dot320Texture;
 LTexture dot400Texture;
 LTexture dot500Texture;
 LTexture dot700Texture;
+LTexture starTexture;
 
 LTexture::LTexture() {
 	// Initialize
@@ -263,6 +264,30 @@ Dot::Dot(int x, int y, int posX, int posY, LTexture* texture, int diameter) {
   // Initialize texture
   dotTexture = texture;
 }
+
+Dot::Dot(int posX, int posY) {
+  // Initialize the offsets
+  mPosX = posX;
+  mPosY = posY;
+
+  // Initialize size
+  dotWidth = 100;
+  dotHeight = 100;
+
+  // Set collision circle size
+  mCollider = new Circle();
+  mCollider->r = dotWidth / 2;
+  mCollider->x = posX;
+  mCollider->y = posY;
+
+  // Initialize the velocity
+  mVelX = 0;
+  mVelY = 0;
+
+  // Initialize texture
+  dotTexture = &starTexture;
+}
+
 
 void Dot::move(Circle* circle) {
   //Move the dot left or right
@@ -458,12 +483,15 @@ bool loadMedia() {
 		success = false;
 	}
 
-
 	if (!dot700Texture.loadFromFile("./dotsTextures/dot700.bmp")) {
     cout << "[ERROR]: Failed to load dot200 texture" << endl;
 		success = false;
 	}
 
+	if (!starTexture.loadFromFile("./dotsTextures/star.bmp")) {
+    cout << "[ERROR]: Failed to load star texture" << endl;
+		success = false;
+	}
 	return success;
 }
 
@@ -486,6 +514,7 @@ void close() {
 	dot400Texture.free();
 	dot500Texture.free();
 	dot700Texture.free();
+  starTexture.free();
 
 	// Destroy window	
 	SDL_DestroyRenderer(gRenderer);
@@ -813,6 +842,10 @@ int main( int argc, char* args[] ) {
 
   // Event handler
   SDL_Event e;
+
+  
+  dots.push_back(new Dot(200, 200));
+
   // The dot that will be moving around on the screen
   for (int i=0; i<atoi(args[1]); i++) {
     int diameter = (rand() % 4 + 1) * 20;
@@ -843,7 +876,8 @@ int main( int argc, char* args[] ) {
       // Move the dot
       Dot* dot = dots[i];
       // For every other dot
-      for (size_t j = i + 1; j < dots.size(); j++) {        Dot* otherdot = dots[j];
+      for (size_t j = i + 1; j < dots.size(); j++) {
+        Dot* otherdot = dots[j];
 
         Circle* otherDotCollider = otherdot -> getCollider(otherdot);
         Circle* currentCollider = dot -> getCollider(dot);
@@ -851,7 +885,58 @@ int main( int argc, char* args[] ) {
         dot->move(otherDotCollider);
 
         if (checkCollision(otherDotCollider, currentCollider) || checkCollision(currentCollider, otherDotCollider)) {
-          if (otherDotCollider -> r !=  currentCollider -> r) {
+          if (((dot -> getVelX() == 0 && dot -> getVelY() == 0) || (otherdot -> getVelX() == 0 && otherdot -> getVelY() == 0))) {
+            Dot* currentDot = otherdot;
+            Dot* star = dot;
+            if (otherdot -> getVelX() == 0 && otherdot -> getVelY() == 0) {
+              currentDot = dot;
+              star = otherdot;
+            }
+
+            if (currentDot -> getCollider(currentDot) -> r > star -> getCollider(star) -> r) {
+              dots.erase(dots.begin() + j);
+              dots.erase(dots.begin() + i);
+
+              int newDiameter = currentDot -> getCollider(currentDot) -> r;
+
+              if (newDiameter % 20 != 0) {
+                newDiameter += 10;
+              }
+
+              
+              if (newDiameter > 260) {
+                newDiameter = 320;
+              } else if (newDiameter > 400) {
+                newDiameter = 400;
+              } else if (newDiameter > 500) {
+                newDiameter = 500;
+              } else if (newDiameter > 700) {
+                  newDiameter = 700;
+              }
+
+              int newPosX = currentDot->getPosX(), newPosY = currentDot->getPosY();
+              if (newPosX + newDiameter >= SCREEN_WIDTH) {
+                newPosX = newPosX - (newPosX + newDiameter - SCREEN_WIDTH - 5);
+              }
+
+              if (newPosY + newDiameter >= SCREEN_HEIGHT) {
+                newPosY = newPosY - (newPosY + newDiameter - SCREEN_HEIGHT - 5);
+              }
+
+
+              cout << "newDiameter  " << newDiameter << "\n";
+              cout << "pos x" << newPosX << "\n";
+              cout << "pos y" << newPosY << "\n";
+              createNewDot(newDiameter, newPosX, newPosY);
+              createNewDot(newDiameter, newPosX + newDiameter, newPosY + newDiameter);
+
+              // Creating star
+              int random = SCREEN_WIDTH - (star -> getCollider(star) -> r * 2);
+              int posX = rand() % random;
+              int posY= rand() % random;
+              dots.push_back(new Dot(posX, posY));
+            }
+          } else if (otherDotCollider -> r !=  currentCollider -> r) {
             dots.erase(dots.begin() + j);
             dots.erase(dots.begin() + i);
 
@@ -914,7 +999,7 @@ int main( int argc, char* args[] ) {
     SDL_RenderPresent( gRenderer );
 
     fps = 1.f / ((float)(newtime - oldtime) / 1000.f);
-    printf("FPS: %f\n", fps);
+    // printf("FPS: %f\n", fps);
   }
 
 	// Free resources and close SDL

@@ -18,6 +18,7 @@ class Dot
 		static const int DOT_VEL = 10;
 
 		//Initializes the variables
+		Dot(int, int);
 		Dot(int, int, int, int, LTexture*, int);
 
 		//Moves the dot
