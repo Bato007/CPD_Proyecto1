@@ -157,43 +157,6 @@ bool LTexture::loadFromFile(string path) {
 	return mTexture != NULL;
 }
 
-#if defined(SDL_TTF_MAJOR_VERSION)
-bool LTexture::loadFromRenderedText( std::string textureText, SDL_Color textColor )
-{
-	//Get rid of preexisting texture
-	free();
-
-	//Render text surface
-	SDL_Surface* textSurface = TTF_RenderText_Solid( gFont, textureText.c_str(), textColor );
-	if( textSurface != NULL )
-	{
-		//Create texture from surface pixels
-        mTexture = SDL_CreateTextureFromSurface( gRenderer, textSurface );
-		if( mTexture == NULL )
-		{
-			printf( "Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError() );
-		}
-		else
-		{
-			//Get image dimensions
-			mWidth = textSurface->w;
-			mHeight = textSurface->h;
-		}
-
-		//Get rid of old surface
-		SDL_FreeSurface( textSurface );
-	}
-	else
-	{
-		printf( "Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError() );
-	}
-
-	
-	//Return success
-	return mTexture != NULL;
-}
-#endif
-
 void LTexture::free() {
 	// Free texture if it exists
 	if(mTexture != NULL) {
@@ -398,135 +361,18 @@ bool init() {
 	return true;
 }
 
-bool loadMedia() {
-	// Loading success flag
-	bool success = true;
-
-	// Load dot texture
-	if (!dot20Texture.loadFromFile("./dotsTextures/dot20.bmp")) {
-    cout << "[ERROR]: Failed to load dot20 texture" << endl;
-		success = false;
-	}
-
-	if (!dot40Texture.loadFromFile("./dotsTextures/dot40.bmp")){
-    cout << "[ERROR]: Failed to load dot40 texture" << endl;
-		success = false;
-	}
-
-	if (!dot60Texture.loadFromFile("./dotsTextures/dot60.bmp")) {
-    cout << "[ERROR]: Failed to load dot60 texture" << endl;
-		success = false;
-	}
-
-	if (!dot80Texture.loadFromFile( "./dotsTextures/dot80.bmp")){
-    cout << "[ERROR]: Failed to load dot80 texture" << endl;
-		success = false;
-	}
-  
-	if (!dot100Texture.loadFromFile("./dotsTextures/dot100.bmp")) {
-    cout << "[ERROR]: Failed to load dot100 texture" << endl;
-		success = false;
-	}
-  
-	if (!dot120Texture.loadFromFile("./dotsTextures/dot120.bmp")) {
-    cout << "[ERROR]: Failed to load dot120 texture" << endl;
-		success = false;
-	}
-
-	if (!dot140Texture.loadFromFile("./dotsTextures/dot140.bmp")) {
-    cout << "[ERROR]: Failed to load dot140 texture" << endl;
-		success = false;
-	}
-
-	if (!dot160Texture.loadFromFile("./dotsTextures/dot160.bmp")) {
-    cout << "[ERROR]: Failed to load dot160 texture" << endl;
-		success = false;
-	}
-  
-	if (!dot180Texture.loadFromFile("./dotsTextures/dot180.bmp")) {
-    cout << "[ERROR]: Failed to load dot180 texture" << endl;
-		success = false;
-	}
-
-	if (!dot200Texture.loadFromFile("./dotsTextures/dot200.bmp")) {
-    cout << "[ERROR]: Failed to load dot200 texture" << endl;
-		success = false;
-	}
-  
-	if (!dot220Texture.loadFromFile("./dotsTextures/dot220.bmp")) {
-    cout << "[ERROR]: Failed to load dot200 texture" << endl;
-		success = false;
-	}
-
-	if (!dot240Texture.loadFromFile("./dotsTextures/dot240.bmp")) {
-    cout << "[ERROR]: Failed to load dot200 texture" << endl;
-		success = false;
-	}
-
-	if (!dot260Texture.loadFromFile("./dotsTextures/dot260.bmp")) {
-    cout << "[ERROR]: Failed to load dot200 texture" << endl;
-		success = false;
-	}
-
-	if (!dot320Texture.loadFromFile("./dotsTextures/dot320.bmp")) {
-    cout << "[ERROR]: Failed to load dot250 texture" << endl;
-		success = false;
-	}
-
-	if (!dot400Texture.loadFromFile("./dotsTextures/dot400.bmp")) {
-    cout << "[ERROR]: Failed to load dot200 texture" << endl;
-		success = false;
-	}
-
-	if (!dot500Texture.loadFromFile("./dotsTextures/dot500.bmp")) {
-    cout << "[ERROR]: Failed to load dot200 texture" << endl;
-		success = false;
-	}
-
-	if (!dot700Texture.loadFromFile("./dotsTextures/dot700.bmp")) {
-    cout << "[ERROR]: Failed to load dot200 texture" << endl;
-		success = false;
-	}
-
-	if (!starTexture.loadFromFile("./dotsTextures/star.bmp")) {
-    cout << "[ERROR]: Failed to load star texture" << endl;
-		success = false;
-	}
-	return success;
+int getDiameter(int newDiameter) {
+    if (newDiameter > 260) {
+      newDiameter = 320;
+    } else if (newDiameter > 400) {
+      newDiameter = 400;
+    } else if (newDiameter > 500) {
+      newDiameter = 500;
+    } else if (newDiameter > 700) {
+        newDiameter = 700;
+    }
+    return newDiameter;
 }
-
-void close() {
-	// Free loaded images
-	dot20Texture.free();
-	dot40Texture.free();
-	dot60Texture.free();
-	dot80Texture.free();
-	dot100Texture.free();
-	dot120Texture.free();
-	dot140Texture.free();
-	dot160Texture.free();
-	dot180Texture.free();
-	dot200Texture.free();
-	dot220Texture.free();
-	dot240Texture.free();
-	dot260Texture.free();
-	dot320Texture.free();
-	dot400Texture.free();
-	dot500Texture.free();
-	dot700Texture.free();
-  starTexture.free();
-
-	// Destroy window	
-	SDL_DestroyRenderer(gRenderer);
-	SDL_DestroyWindow(gWindow);
-	gWindow = NULL;
-	gRenderer = NULL;
-
-	// Quit SDL subsystems
-	IMG_Quit();
-	SDL_Quit();
-}
-
 // Overload to set defined velocities
 void createNewDot(int diameter, int posX, int posY, int velX, int velY) {
 	int newPosX = min(max(diameter / 2, posX), SCREEN_WIDTH - (diameter / 2));
@@ -843,7 +689,7 @@ int main( int argc, char* args[] ) {
   // Event handler
   SDL_Event e;
 
-  
+  // Creating initial star in 200, 200
   dots.push_back(new Dot(200, 200));
 
   // The dot that will be moving around on the screen
@@ -853,7 +699,6 @@ int main( int argc, char* args[] ) {
     int random = SCREEN_WIDTH - diameter;
     int posX = rand() % random;
     int posY= rand() % random;
-    cout << "diameter " << diameter << "   pos   " << posX << ", " << posY <<   "\n";
     createNewDot(diameter, posX, posY );
   }
 
@@ -885,6 +730,9 @@ int main( int argc, char* args[] ) {
         dot->move(otherDotCollider);
 
         if (checkCollision(otherDotCollider, currentCollider) || checkCollision(currentCollider, otherDotCollider)) {
+          /*
+          If there is no velocity on x and y, it means one of them is the star
+          */
           if (((dot -> getVelX() == 0 && dot -> getVelY() == 0) || (otherdot -> getVelX() == 0 && otherdot -> getVelY() == 0))) {
             Dot* currentDot = otherdot;
             Dot* star = dot;
@@ -893,26 +741,19 @@ int main( int argc, char* args[] ) {
               star = otherdot;
             }
 
-            if (currentDot -> getCollider(currentDot) -> r > star -> getCollider(star) -> r) {
+            if (currentDot -> getCollider(currentDot) -> r >= star -> getCollider(star) -> r) {
               dots.erase(dots.begin() + j);
               dots.erase(dots.begin() + i);
 
               int newDiameter = currentDot -> getCollider(currentDot) -> r;
 
+              /*
+              Getting an available texture
+              */
               if (newDiameter % 20 != 0) {
                 newDiameter += 10;
               }
-
-              
-              if (newDiameter > 260) {
-                newDiameter = 320;
-              } else if (newDiameter > 400) {
-                newDiameter = 400;
-              } else if (newDiameter > 500) {
-                newDiameter = 500;
-              } else if (newDiameter > 700) {
-                  newDiameter = 700;
-              }
+              newDiameter = getDiameter(newDiameter);
 
               int newPosX = currentDot->getPosX(), newPosY = currentDot->getPosY();
               if (newPosX + newDiameter >= SCREEN_WIDTH) {
@@ -923,15 +764,12 @@ int main( int argc, char* args[] ) {
                 newPosY = newPosY - (newPosY + newDiameter - SCREEN_HEIGHT - 5);
               }
 
-
-              cout << "newDiameter  " << newDiameter << "\n";
-              cout << "pos x" << newPosX << "\n";
-              cout << "pos y" << newPosY << "\n";
+              // Creating two new dots
               createNewDot(newDiameter, newPosX, newPosY);
               createNewDot(newDiameter, newPosX + newDiameter, newPosY + newDiameter);
 
               // Creating star
-              int random = SCREEN_WIDTH - (star -> getCollider(star) -> r * 2);
+              int random = SCREEN_WIDTH - 400;
               int posX = rand() % random;
               int posY= rand() % random;
               dots.push_back(new Dot(posX, posY));
@@ -941,17 +779,7 @@ int main( int argc, char* args[] ) {
             dots.erase(dots.begin() + i);
 
             int newDiameter = (otherDotCollider -> r + currentCollider -> r) * 2;
-
-            if (newDiameter > 260) {
-              newDiameter = 320;
-            } else if (newDiameter > 400) {
-              newDiameter = 400;
-            } else if (newDiameter > 500) {
-              newDiameter = 500;
-            } else if (newDiameter > 700) {
-                newDiameter = 700;
-            }
-
+            newDiameter = getDiameter(newDiameter);
 
             int newRadius = newDiameter / 2;
             int newPosX = dot->getPosX(), newPosY = dot->getPosY();
@@ -959,8 +787,6 @@ int main( int argc, char* args[] ) {
 						int newSpeedX = ((dot->dotWidth / 2) * dot->getVelX() + (otherdot->dotWidth / 2) * otherdot->getVelX()) / newRadius;
 						int newSpeedY = ((dot->dotWidth / 2) * dot->getVelY() + (otherdot->dotWidth / 2) * otherdot->getVelY()) / newRadius;
 
-            // cout << "pre - pos x" << newPosX << "\n";
-            // cout << "pre -pos y" << newPosY << "\n";
             if (newPosX + newRadius >= SCREEN_WIDTH) {
               newPosX = newPosX - (newPosX + newRadius - SCREEN_WIDTH - 5);
             }
@@ -969,11 +795,6 @@ int main( int argc, char* args[] ) {
               newPosY = newPosY - (newPosY + newRadius - SCREEN_HEIGHT - 5);
             }
 
-            // cout << "newDiameter  " << newDiameter << "\n";
-            // cout << "pos x" << newPosX << "\n";
-            // cout << "pos y" << newPosY << "\n";
-            // SCREEN_WIDTH
-
             createNewDot(newDiameter, newPosX, newPosY, newSpeedX, newSpeedY);
           }
         }
@@ -981,7 +802,6 @@ int main( int argc, char* args[] ) {
       }
 
       if (i + 1 == dots.size()) {
-        // cout << "Entra move sola \n";
         dot->move();
       }
     }
@@ -999,11 +819,141 @@ int main( int argc, char* args[] ) {
     SDL_RenderPresent( gRenderer );
 
     fps = 1.f / ((float)(newtime - oldtime) / 1000.f);
-    // printf("FPS: %f\n", fps);
+    printf("FPS: %f\n", fps);
   }
 
 	// Free resources and close SDL
 	close();
 
 	return 0;
+}
+
+
+bool loadMedia() {
+	// Loading success flag
+	bool success = true;
+
+	// Load dot texture
+	if (!dot20Texture.loadFromFile("./dotsTextures/dot20.bmp")) {
+    cout << "[ERROR]: Failed to load dot20 texture" << endl;
+		success = false;
+	}
+
+	if (!dot40Texture.loadFromFile("./dotsTextures/dot40.bmp")){
+    cout << "[ERROR]: Failed to load dot40 texture" << endl;
+		success = false;
+	}
+
+	if (!dot60Texture.loadFromFile("./dotsTextures/dot60.bmp")) {
+    cout << "[ERROR]: Failed to load dot60 texture" << endl;
+		success = false;
+	}
+
+	if (!dot80Texture.loadFromFile( "./dotsTextures/dot80.bmp")){
+    cout << "[ERROR]: Failed to load dot80 texture" << endl;
+		success = false;
+	}
+  
+	if (!dot100Texture.loadFromFile("./dotsTextures/dot100.bmp")) {
+    cout << "[ERROR]: Failed to load dot100 texture" << endl;
+		success = false;
+	}
+  
+	if (!dot120Texture.loadFromFile("./dotsTextures/dot120.bmp")) {
+    cout << "[ERROR]: Failed to load dot120 texture" << endl;
+		success = false;
+	}
+
+	if (!dot140Texture.loadFromFile("./dotsTextures/dot140.bmp")) {
+    cout << "[ERROR]: Failed to load dot140 texture" << endl;
+		success = false;
+	}
+
+	if (!dot160Texture.loadFromFile("./dotsTextures/dot160.bmp")) {
+    cout << "[ERROR]: Failed to load dot160 texture" << endl;
+		success = false;
+	}
+  
+	if (!dot180Texture.loadFromFile("./dotsTextures/dot180.bmp")) {
+    cout << "[ERROR]: Failed to load dot180 texture" << endl;
+		success = false;
+	}
+
+	if (!dot200Texture.loadFromFile("./dotsTextures/dot200.bmp")) {
+    cout << "[ERROR]: Failed to load dot200 texture" << endl;
+		success = false;
+	}
+  
+	if (!dot220Texture.loadFromFile("./dotsTextures/dot220.bmp")) {
+    cout << "[ERROR]: Failed to load dot200 texture" << endl;
+		success = false;
+	}
+
+	if (!dot240Texture.loadFromFile("./dotsTextures/dot240.bmp")) {
+    cout << "[ERROR]: Failed to load dot200 texture" << endl;
+		success = false;
+	}
+
+	if (!dot260Texture.loadFromFile("./dotsTextures/dot260.bmp")) {
+    cout << "[ERROR]: Failed to load dot200 texture" << endl;
+		success = false;
+	}
+
+	if (!dot320Texture.loadFromFile("./dotsTextures/dot320.bmp")) {
+    cout << "[ERROR]: Failed to load dot250 texture" << endl;
+		success = false;
+	}
+
+	if (!dot400Texture.loadFromFile("./dotsTextures/dot400.bmp")) {
+    cout << "[ERROR]: Failed to load dot200 texture" << endl;
+		success = false;
+	}
+
+	if (!dot500Texture.loadFromFile("./dotsTextures/dot500.bmp")) {
+    cout << "[ERROR]: Failed to load dot200 texture" << endl;
+		success = false;
+	}
+
+	if (!dot700Texture.loadFromFile("./dotsTextures/dot700.bmp")) {
+    cout << "[ERROR]: Failed to load dot200 texture" << endl;
+		success = false;
+	}
+
+	if (!starTexture.loadFromFile("./dotsTextures/star.bmp")) {
+    cout << "[ERROR]: Failed to load star texture" << endl;
+		success = false;
+	}
+	return success;
+}
+
+void close() {
+	// Free loaded images
+	dot20Texture.free();
+	dot40Texture.free();
+	dot60Texture.free();
+	dot80Texture.free();
+	dot100Texture.free();
+	dot120Texture.free();
+	dot140Texture.free();
+	dot160Texture.free();
+	dot180Texture.free();
+	dot200Texture.free();
+	dot220Texture.free();
+	dot240Texture.free();
+	dot260Texture.free();
+	dot320Texture.free();
+	dot400Texture.free();
+	dot500Texture.free();
+	dot700Texture.free();
+  starTexture.free();
+
+	// Destroy window	
+	SDL_DestroyRenderer(gRenderer);
+	SDL_DestroyWindow(gWindow);
+	gWindow = NULL;
+	gRenderer = NULL;
+
+	// Quit SDL subsystems
+	IMG_Quit();
+	SDL_Quit();
 }
