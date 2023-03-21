@@ -777,6 +777,14 @@ int main( int argc, char* args[] ) {
                 dots.push_back(new Dot(posX, posY));
               }
             } else if (otherDotCollider -> r !=  currentCollider -> r) {
+              int posX, posY;
+              if (otherDotCollider->r > currentCollider->r) {
+                posX = otherdot->getPosX();
+                posY = otherdot->getPosY();
+              } else {
+                posX = dot->getPosX();
+                posY = dot->getPosY();
+              }
               dots.erase(dots.begin() + j);
               dots.erase(dots.begin() + i);
 
@@ -784,20 +792,11 @@ int main( int argc, char* args[] ) {
               newDiameter = getDiameter(newDiameter);
 
               int newRadius = newDiameter / 2;
-              int newPosX = dot->getPosX(), newPosY = dot->getPosY();
 
               int newSpeedX = ((dot->dotWidth / 2) * dot->getVelX() + (otherdot->dotWidth / 2) * otherdot->getVelX()) / newRadius;
               int newSpeedY = ((dot->dotWidth / 2) * dot->getVelY() + (otherdot->dotWidth / 2) * otherdot->getVelY()) / newRadius;
 
-              if (newPosX + newRadius >= SCREEN_WIDTH) {
-                newPosX = newPosX - (newPosX + newRadius - SCREEN_WIDTH - 5);
-              }
-
-              if (newPosY + newRadius >= SCREEN_HEIGHT) {
-                newPosY = newPosY - (newPosY + newRadius - SCREEN_HEIGHT - 5);
-              }
-
-              createNewDot(newDiameter, newPosX, newPosY, newSpeedX, newSpeedY);
+              createNewDot(newDiameter, posX, posY, newSpeedX, newSpeedY);
             }
           }
 
