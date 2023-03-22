@@ -16,40 +16,6 @@ const int SCREEN_HEIGHT = 720;
 
 vector<Dot*> dots;
 
-
-// The application time based timer
-class LTimer {
-  public:
-  // Initializes variables
-  LTimer();
-
-  // The various clock actions
-  void start();
-  void stop();
-  void pause();
-  void unpause();
-
-  // Gets the timer's time
-  Uint32 getTicks();
-
-  // Checks the status of the timer
-  bool isStarted();
-  bool isPaused();
-
-  private:
-  // The clock time when the timer started
-  Uint32 mStartTicks;
-
-  // The ticks stored when the timer was paused
-  Uint32 mPausedTicks;
-
-  // The timer status
-  bool mPaused;
-  bool mStarted;
-};
-
-// The dot that will move around on the screen
-
 // Starts up SDL and creates window
 bool init();
 
@@ -165,21 +131,6 @@ void LTexture::free() {
 		mWidth = 0;
 		mHeight = 0;
 	}
-}
-
-void LTexture::setColor(Uint8 red, Uint8 green, Uint8 blue) {
-	// Modulate texture rgb
-	SDL_SetTextureColorMod(mTexture, red, green, blue);
-}
-
-void LTexture::setBlendMode(SDL_BlendMode blending) {
-	// Set blending function
-	SDL_SetTextureBlendMode( mTexture, blending );
-}
-
-void LTexture::setAlpha( Uint8 alpha ) {
-	// Modulate texture alpha
-	SDL_SetTextureAlphaMod( mTexture, alpha );
 }
 
 void LTexture::render(int x, int y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip) {
