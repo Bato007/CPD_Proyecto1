@@ -66,12 +66,18 @@ bool checkCollision( Dot& a, Dot& b );
 double distanceSquared( int x1, int y1, int x2, int y2 );
 
 bool checkCollision( Circle* a, Circle* b ) {
+    // int totalRadiusSquared = a->r + b->r;
+	// totalRadiusSquared = totalRadiusSquared * totalRadiusSquared;
 	// Calculate total radius squared
-	int totalRadiusSquared = a->r + b->r;
-	totalRadiusSquared = totalRadiusSquared * totalRadiusSquared;
-
+	int totalRadiusSquared = b->r;
+    if ( a->r < b->r) {
+        totalRadiusSquared = a->r;
+    }
+    totalRadiusSquared *= 2 * totalRadiusSquared;
   // If the distance between the centers of the circles is less than the sum of their radii
+//   cout << "distanceSquared( a->x, a->y, b->x, b->y ): "  << distanceSquared( a->x, a->y, b->x, b->y ) << "\n";
   if (distanceSquared( a->x, a->y, b->x, b->y ) < (totalRadiusSquared)) {
+//   cout << "distanceSquared( a->x, a->y, b->x, b->y ): "  << distanceSquared( a->x, a->y, b->x, b->y ) << "   " << totalRadiusSquared << "\n";
     return true;
   }
 
@@ -81,6 +87,7 @@ bool checkCollision( Circle* a, Circle* b ) {
 double distanceSquared(int x1, int y1, int x2, int y2) {
 	int deltaX = x2 - x1;
 	int deltaY = y2 - y1;
+    // cout << "deltaX: "  << deltaX << "    deltaY: " << deltaY << "\n";
 	return deltaX*deltaX + deltaY*deltaY;
 }
 
@@ -189,21 +196,6 @@ void LTexture::free() {
 		mWidth = 0;
 		mHeight = 0;
 	}
-}
-
-void LTexture::setColor(Uint8 red, Uint8 green, Uint8 blue) {
-	// Modulate texture rgb
-	SDL_SetTextureColorMod(mTexture, red, green, blue);
-}
-
-void LTexture::setBlendMode(SDL_BlendMode blending) {
-	// Set blending function
-	SDL_SetTextureBlendMode( mTexture, blending );
-}
-
-void LTexture::setAlpha( Uint8 alpha ) {
-	// Modulate texture alpha
-	SDL_SetTextureAlphaMod( mTexture, alpha );
 }
 
 void LTexture::render(int x, int y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip) {
@@ -637,7 +629,7 @@ Dot* createNewDot(int diameter, int posX, int posY, int velX, int velY) {
     default:
       /* 100 dot */
       /* Speed: [2, 3]  */
-      return nullptr;
+        return nullptr;
   }
 }
 
@@ -994,7 +986,9 @@ void makeMoves(int numberThreads) {
           {
             deletedDotsIndex.push_back(j);
             deletedDotsIndex.push_back(i);
-            newDots.push_back(newDot);
+            if (newDiameter <= 700) {
+                newDots.push_back(newDot);
+            }
           }
         } 
       }
@@ -1034,13 +1028,13 @@ int main( int argc, char* args[] ) {
   #pragma omp parallel for 
   for (int i=0; i < atoi(args[1]); i++) {
     unsigned int myseed = omp_get_thread_num();
-    int diameter = (rand_r(&myseed) % 2 + 1) * 20;
+    int diameter = (rand() % 2 + 1) * 20;
     int radio = diameter / 2;
 
     int randomX = SCREEN_WIDTH - radio;
     int randomY = SCREEN_HEIGHT - radio;
-    int posX = (rand_r(&myseed) % randomX) + radio;
-    int posY= (rand_r(&myseed) % randomY) + radio;
+    int posX = (rand() % randomX) + radio;
+    int posY= (rand() % randomY) + radio;
     Dot* newDot = createNewDot(diameter, posX, posY);
 
     #pragma omp critical(dots)
@@ -1102,7 +1096,7 @@ int main( int argc, char* args[] ) {
     deletedDotsIndex.clear();
 
     fps = 1.f / ((float)(newtime - oldtime) / 1000.f);
-    cout << "FPS:" << fps << endl;
+    // cout << "FPS:" << fps << endl;
   }
 
 	// Free resources and close SDL
