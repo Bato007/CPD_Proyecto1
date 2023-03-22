@@ -72,6 +72,10 @@ void close();
 Dot* createNewDot(int diameter, int posX, int posY);
 Dot* createNewDot(int diameter, int posX, int posY, int velX, int velY);
 
+/// @brief checks if two circles have a collision
+/// @param a the first circle
+/// @param b the second circle
+/// @return if there was a collision or not
 bool checkCollision(Circle* a, Circle* b) {
 	// Calculate total radius squared
 	int totalRadiusSquared = a->r + b->r;
@@ -85,12 +89,19 @@ bool checkCollision(Circle* a, Circle* b) {
   return false;
 }
 
+/// @brief calculates the distance elevated by 2
+/// @param x1 position x of first circle
+/// @param y1 position y of first circle
+/// @param x2 position x of second circle
+/// @param y2 position y of second circle
+/// @return the distance with pow 2 (d^2 = (x2 - x1)^2 + (y2 - y1)^2)
 double distanceSquared(int x1, int y1, int x2, int y2) {
 	int deltaX = x2 - x1;
 	int deltaY = y2 - y1;
 	return deltaX*deltaX + deltaY*deltaY;
 }
 
+/// @brief init all SDL2 related variables and libraries
 bool init() {
 	// Init de SDL
 	if(SDL_Init( SDL_INIT_VIDEO ) < 0) {
@@ -130,6 +141,7 @@ bool init() {
 	return true;
 }
 
+/// @brief loads all textures to memory
 bool loadMedia() {
 	// Loading success flag
 	bool success = true;
@@ -302,6 +314,7 @@ bool loadMedia() {
 	return success;
 }
 
+/// @brief frees the memory and cleans the variables of SDL
 void close() {
 	// Free loaded images
 	dot20Texture.free();
@@ -352,10 +365,11 @@ void close() {
 	SDL_Quit();
 }
 
-
-
-
-// Overload to set defined velocities
+/// @brief creates a new dot in the screen
+/// @param diameter the diameter of the dot
+/// @param posX intial X position of the dot
+/// @param posY intial Y position of the dot
+/// @return a new dot with assigned values
 Dot* createNewDot(int diameter, int posX, int posY, int velX, int velY) {
 	int newPosX = min(max(diameter / 2, posX), SCREEN_WIDTH - (diameter / 2));
 	int newPosY = min(max(diameter / 2, posY), SCREEN_HEIGHT - (diameter / 2));
@@ -612,7 +626,13 @@ Dot* createNewDot(int diameter, int posX, int posY, int velX, int velY) {
   }
 }
 
-// Overload to set random velocities
+/// @brief creates a new dot in the screen
+/// @param diameter the diameter of the dot
+/// @param posX intial X position of the dot
+/// @param posY intial Y position of the dot
+/// @param velX intial X velocity of the dot
+/// @param velY intial Y velocity of the dot
+/// @return a new dot with assigned values
 Dot* createNewDot(int diameter, int posX, int posY) {
 	int newPosX = min(max(diameter / 2, posX), SCREEN_WIDTH - (diameter / 2));
 	int newPosY = min(max(diameter / 2, posY), SCREEN_HEIGHT - (diameter / 2));
@@ -870,11 +890,10 @@ Dot* createNewDot(int diameter, int posX, int posY) {
   }
 }
 
-
-
-
-
 // Class functions
+// --- LTexture ---
+
+/// @brief Creates a new default texture
 LTexture::LTexture() {
 	// Initialize
 	mTexture = NULL;
@@ -882,11 +901,15 @@ LTexture::LTexture() {
 	mHeight = 0;
 }
 
+/// @brief Free memory of the texture
 LTexture::~LTexture() {
 	// Deallocate
 	free();
 }
 
+/// @brief Loads to memory a texture
+/// @param path the relative path to the texture 
+/// @return if the texture was opened
 bool LTexture::loadFromFile(string path) {
 	// Get rid of preexisting texture
 	free();
@@ -921,6 +944,7 @@ bool LTexture::loadFromFile(string path) {
 	return mTexture != NULL;
 }
 
+/// @brief Free memory of the texture
 void LTexture::free() {
 	// Free texture if it exists
 	if(mTexture != NULL) {
@@ -931,6 +955,13 @@ void LTexture::free() {
 	}
 }
 
+/// @brief Renders the screen on the 
+/// @param x 
+/// @param y 
+/// @param clip 
+/// @param angle 
+/// @param center 
+/// @param flip 
 void LTexture::render(int x, int y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip) {
 	// Set rendering space and render to screen
 	SDL_Rect renderQuad = { x, y, mWidth, mHeight };
@@ -945,14 +976,21 @@ void LTexture::render(int x, int y, SDL_Rect* clip, double angle, SDL_Point* cen
 	SDL_RenderCopyEx(gRenderer, mTexture, clip, &renderQuad, angle, center, flip);
 }
 
+/// @brief Gets the width of the texture
+/// @return The width of the texture
 int LTexture::getWidth() {
 	return mWidth;
 }
 
+/// @brief Gets the height of the texture
+/// @return The height of the texture
 int LTexture::getHeight() {
 	return mHeight;
 }
 
+/// @brief Constructor of dot
+/// @param posX initial X position of dot
+/// @param posY initial Y position of dot
 Dot::Dot(int posX, int posY) {
   // Initialize the offsets
   mPosX = posX;
@@ -976,6 +1014,13 @@ Dot::Dot(int posX, int posY) {
   dotTexture = &starTexture;
 }
 
+/// @brief Constructor of dot
+/// @param x maximum value of X velocity
+/// @param y maximum value of Y velocity
+/// @param posX initial X position of dot 
+/// @param posY intial Y position of dot
+/// @param texture the texture of the dot
+/// @param diameter the diameter of the dot
 Dot::Dot(int x, int y, int posX, int posY, LTexture* texture, int diameter) {
   // Initialize the offsets
   mPosX = posX;
@@ -999,6 +1044,7 @@ Dot::Dot(int x, int y, int posX, int posY, LTexture* texture, int diameter) {
   dotTexture = texture;
 }
 
+/// @brief Moves a dot on the screen
 void Dot::move() {
   // Move the dot left or right
   mPosX += mVelX;
@@ -1022,6 +1068,8 @@ void Dot::move() {
   shiftColliders();
 }
 
+/// @brief Makes the move of a dot based on another circle
+/// @param circle the other circle that can affect current dot
 void Dot::move(Circle* circle) {
   //Move the dot left or right
   mPosX += mVelX;
@@ -1048,17 +1096,22 @@ void Dot::move(Circle* circle) {
   }
 }
 
+/// @brief Renders the dot on the screen on certain position
 void Dot::render() {
   // Show the dot
 	dotTexture->render(mPosX - mCollider->r, mPosY - mCollider->r);
 }
 
+/// @brief Moves the collider to current position of the dot
 void Dot::shiftColliders() {
 	//Align collider to center of dot
 	mCollider->x = mPosX;
 	mCollider->y = mPosY;
 }
 
+/// @brief Gets the collider of the other dot
+/// @param otherdot the dot that will return it's collider
+/// @return the collider of other dot
 Circle* Dot::getCollider(Dot *otherdot) {
 	return otherdot->mCollider;
 }
