@@ -6,11 +6,12 @@ using namespace std;
 vector<Dot*> newDots;
 vector<int> deletedDotsIndex;
 omp_lock_t starLock;
+bool starExists = false;
+int numStarsAdded = 0;
 
 void makeMoves(int numberThreads) {
-  int numStarsAdded = 0;
   size_t dotsLen = dots.size();
-  cout << "LENNN " << dotsLen << endl;
+  // cout << "LENNN " << dotsLen << endl;
 
   #pragma omp parallel for num_threads(2) shared(numStarsAdded)
   for (size_t i = 0; i < dots.size(); i++) {
@@ -19,7 +20,7 @@ void makeMoves(int numberThreads) {
 
     // For every other dot
     for (size_t j = i + 1; j < dots.size(); j++) {
-      cout << omp_get_thread_num() <<"===> " << i << " <---> " << j << "<---->" << dotsLen << "---" << (j < dotsLen) << "\n";
+      // cout << omp_get_thread_num() <<"===> " << i << " <---> " << j << "<---->" << dotsLen << "---" << (j < dotsLen) << "\n";
       
       Dot* otherdot = dots[j];
 
@@ -77,9 +78,10 @@ void makeMoves(int numberThreads) {
               newDots.push_back(childDot1);
               newDots.push_back(childDot2);
 
-              if (numStarsAdded == 0) {
+              if (numStarsAdded == 0 && !starExists) {
                 newDots.push_back(newStar);
                 numStarsAdded++;
+                newStar->setStar();
               }
             omp_unset_lock(&starLock);
           }
@@ -127,7 +129,7 @@ void makeMoves(int numberThreads) {
     }
   }
 
-  cout << "<<<===========================+>>>>" << endl;
+  // cout << "<<<===========================+>>>>" << endl;
 }
 
 int main( int argc, char* args[] ) {
@@ -156,19 +158,21 @@ int main( int argc, char* args[] ) {
   SDL_Event e;
 
   // Creating initial star in 200, 200
-  dots.push_back(new Dot(200, 200));
+  Dot* star = new Dot(200, 200);
+  star->setStar();
+  dots.push_back(star);
+  starExists = true;
 
   // The dot that will be moving around on the screen
   #pragma omp parallel for 
   for (int i=0; i < atoi(args[1]); i++) {
     unsigned int myseed = omp_get_thread_num();
-    int diameter = (rand_r(&myseed) % 2 + 1) * 20;
-    int radio = diameter / 2;
+    int diameter = (rand() % 4 + 1) * 20;
 
-    int randomX = SCREEN_WIDTH - radio;
-    int randomY = SCREEN_HEIGHT - radio;
-    int posX = (rand_r(&myseed) % randomX) + radio;
-    int posY= (rand_r(&myseed) % randomY) + radio;
+    int randomX = SCREEN_WIDTH - diameter;
+    int randomY = SCREEN_HEIGHT - diameter;
+    int posX = (rand() % randomX);
+    int posY= (rand() % randomY);
     Dot* newDot = createNewDot(diameter, posX, posY);
 
     #pragma omp critical(dots)
@@ -190,6 +194,8 @@ int main( int argc, char* args[] ) {
         quit = true;
       }
     }
+    starExists = false;
+    numStarsAdded = 0;
 
     makeMoves(2);
 
@@ -207,6 +213,19 @@ int main( int argc, char* args[] ) {
       // Do not insert
       if (found == 1) { continue; }
       newDots.push_back(dots.at(i));
+    }
+
+
+    if (!starExists) {
+      // Creating star
+      int random = SCREEN_WIDTH - 400;
+      int posX = rand() % random;
+      int posY= rand() % random;
+      Dot* tempStar = new Dot(posX, posY);
+      tempStar->setStar();
+      dots.push_back(tempStar);
+      numStarsAdded += 1;
+      starExists = true;
     }
 
     dots.clear();
@@ -230,7 +249,7 @@ int main( int argc, char* args[] ) {
     deletedDotsIndex.clear();
 
     fps = 1.f / ((float)(newtime - oldtime) / 1000.f);
-    cout << "FPS:" << fps << endl;
+    // cout << "FPS:" << fps << endl;
   }
 
 	// Free resources and close SDL
