@@ -9,13 +9,17 @@ omp_lock_t starLock;
 
 void makeMoves(int numberThreads) {
   int numStarsAdded = 0;
+  size_t dotsLen = dots.size();
+  cout << "LENNN " << dotsLen << endl;
 
-  #pragma omp parallel for
+  #pragma omp parallel for num_threads(2) shared(numStarsAdded)
   for (size_t i = 0; i < dots.size(); i++) {
     // Move the dot
     Dot* dot = dots[i];
+
     // For every other dot
     for (size_t j = i + 1; j < dots.size(); j++) {
+      cout << omp_get_thread_num() <<"===> " << i << " <---> " << j << "<---->" << dotsLen << "---" << (j < dotsLen) << "\n";
       
       Dot* otherdot = dots[j];
 
@@ -122,6 +126,8 @@ void makeMoves(int numberThreads) {
       }
     }
   }
+
+  cout << "<<<===========================+>>>>" << endl;
 }
 
 int main( int argc, char* args[] ) {
@@ -185,7 +191,7 @@ int main( int argc, char* args[] ) {
       }
     }
 
-    makeMoves(omp_get_num_threads());
+    makeMoves(2);
 
     for (size_t i = 0; i < dots.size(); i++) {
       int found = 0;
