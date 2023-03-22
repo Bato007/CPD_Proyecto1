@@ -1,11 +1,14 @@
+#include <omp.h>
+
 #include "shared.cpp"
 using namespace std;
 
 int main( int argc, char* args[] ) {
   int numStarsAdded = 0;
   bool starExists = false;
+
 	if (argc < 2) {
-    cout << "No se han ingresado suficientes argumentos" << endl;
+    cout << "Not enough arguments" << endl;
 		exit(-1);
 	}
 
@@ -22,7 +25,12 @@ int main( int argc, char* args[] ) {
   }
 
   // Main loop flag
+  int startDotsNum = atoi(args[1]);
+  int isParallel = atoi(args[2]);
+  int t_num = atoi(args[3]);
   bool quit = false;
+
+  dots.reserve(startDotsNum + 1);
 
   // Event handler
   SDL_Event e;
@@ -34,13 +42,18 @@ int main( int argc, char* args[] ) {
   starExists = true;
 
   // The dot that will be moving around on the screen
-  for (int i=0; i<atoi(args[1]); i++) {
+  #pragma omp parallel for num_threads(t_num) if (isParallel)
+  for (int i = 1; i < startDotsNum + 1; i++) {
     int diameter = (rand() % 4 + 1) * 20;
 
     int random = SCREEN_WIDTH - diameter;
     int posX = rand() % random;
     int posY= rand() % random;
-    dots.push_back(createNewDot(diameter, posX, posY));
+    // omp_in_parallel();
+    Dot* newDot = createNewDot(diameter, posX, posY);
+
+    #pragma omp critical (dots)
+    dots.push_back(newDot);
   }
 
   Uint32 oldtime = 0;
@@ -50,20 +63,21 @@ int main( int argc, char* args[] ) {
   while(!quit) {
     oldtime = newtime;
     newtime = SDL_GetTicks();
+
     // Handle events on queue
-    while(SDL_PollEvent( &e ) != 0) {
+    while(SDL_PollEvent(&e) != 0) {
       //User requests quit
-      if( e.type == SDL_QUIT ) {
-        quit = true;
-      }
+      if( e.type == SDL_QUIT ) { quit = true; }
     }
+
     starExists = false;
+    #pragma omp parallel for num_threads(t_num) if (isParallel)
     for (Dot* d: dots) {
       if (d->getIsStar()) {
         starExists = true;
-        break;
       }
     }
+
     if (!starExists) {
       // Creating star
       int random = SCREEN_WIDTH - 400;
@@ -77,6 +91,7 @@ int main( int argc, char* args[] ) {
     }
 
     numStarsAdded = 0;
+    // #pragma omp parallel for ordered num_threads(t_num) if (isParallel) shared(numStarsAdded) 
     for (size_t i = 0; i < dots.size(); i++) {
       // Move the dot
       Dot* dot = dots.at(i);
@@ -104,9 +119,6 @@ int main( int argc, char* args[] ) {
               }
 
               if (currentDot -> getCollider(currentDot) -> r >= star -> getCollider(star) -> r) {
-                dots.erase(dots.begin() + j);
-                dots.erase(dots.begin() + i);
-
                 int newDiameter = currentDot -> getCollider(currentDot) -> r;
 
                 /*
@@ -126,18 +138,26 @@ int main( int argc, char* args[] ) {
                 }
 
                 // Creating two new dots
-                dots.push_back(createNewDot(newDiameter, newPosX, newPosY));
-                dots.push_back(createNewDot(newDiameter, newPosX + newDiameter, newPosY + newDiameter));
+                Dot* childDot1 = createNewDot(newDiameter, newPosX, newPosY);
+                Dot* childDot2 = createNewDot(newDiameter, newPosX + newDiameter, newPosY + newDiameter);
 
-                if (numStarsAdded == 0 && !starExists) {
-                  // Creating star
-                  int random = SCREEN_WIDTH - 400;
-                  int posX = rand() % random;
-                  int posY= rand() % random;
-                  Dot* tempStar = new Dot(posX, posY);
-                  tempStar->setStar();
-                  dots.push_back(tempStar);
-                  numStarsAdded += 1;
+                #pragma omp critical
+                {
+                  dots.erase(dots.begin() + j);
+                  dots.erase(dots.begin() + i);
+                  dots.push_back(childDot1);
+                  dots.push_back(childDot2);
+
+                  if (numStarsAdded == 0 && !starExists) {
+                    // Creating star
+                    int random = SCREEN_WIDTH - 400;
+                    int posX = rand() % random;
+                    int posY= rand() % random;
+                    Dot* tempStar = new Dot(posX, posY);
+                    tempStar->setStar();
+                    dots.push_back(tempStar);
+                    numStarsAdded += 1;
+                  }
                 }
               }
             } else if (otherDotCollider -> r !=  currentCollider -> r) {
@@ -149,8 +169,6 @@ int main( int argc, char* args[] ) {
                 posX = dot->getPosX();
                 posY = dot->getPosY();
               }
-              dots.erase(dots.begin() + j);
-              dots.erase(dots.begin() + i);
 
               int newDiameter = (otherDotCollider -> r + currentCollider -> r) * 2;
 
@@ -158,9 +176,16 @@ int main( int argc, char* args[] ) {
 
               int newSpeedX = ((dot->dotWidth / 2) * dot->getVelX() + (otherdot->dotWidth / 2) * otherdot->getVelX()) / newRadius;
               int newSpeedY = ((dot->dotWidth / 2) * dot->getVelY() + (otherdot->dotWidth / 2) * otherdot->getVelY()) / newRadius;
+              Dot* newDot = createNewDot(newDiameter, posX, posY, newSpeedX, newSpeedY);
 
-              if (newDiameter <= MAX_DIAMETER) {
-                dots.push_back(createNewDot(newDiameter, posX, posY, newSpeedX, newSpeedY));
+
+              #pragma omp critical
+              {
+                dots.erase(dots.begin() + j);
+                dots.erase(dots.begin() + i);
+                if (newDiameter <= MAX_DIAMETER) {
+                  dots.push_back(newDot);
+                }
               }
             }
           }
@@ -175,6 +200,7 @@ int main( int argc, char* args[] ) {
     SDL_RenderClear( gRenderer );
 
     // Render objects
+    #pragma omp parallel for ordered num_threads(t_num) if (isParallel)
     for (Dot* dot: dots) {
       dot->render();
     }
@@ -183,7 +209,7 @@ int main( int argc, char* args[] ) {
     SDL_RenderPresent( gRenderer );
 
     fps = 1.f / ((float)(newtime - oldtime) / 1000.f);
-    // printf("FPS: %f\n", fps);
+    // cout << "FPS:" << fps << endl;
   }
 
 	// Free resources and close SDL

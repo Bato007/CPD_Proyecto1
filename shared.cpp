@@ -15,6 +15,7 @@ const int SCREEN_WIDTH = 1080;
 const int SCREEN_HEIGHT = 720;
 const int MAX_DIAMETER = 700;
 
+
 // Dots controll variables
 vector<Dot*> dots;
 
@@ -238,7 +239,6 @@ bool loadMedia() {
     cout << "[ERROR]: Failed to load dot250 texture" << endl;
 		success = false;
 	}
-
 
 	if (!dot400Texture.loadFromFile("./dotsTextures/dot400.png")) {
     cout << "[ERROR]: Failed to load dot200 texture" << endl;
