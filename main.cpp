@@ -135,7 +135,7 @@ int main( int argc, char* args[] ) {
               int newSpeedX = ((dot->dotWidth / 2) * dot->getVelX() + (otherdot->dotWidth / 2) * otherdot->getVelX()) / newRadius;
               int newSpeedY = ((dot->dotWidth / 2) * dot->getVelY() + (otherdot->dotWidth / 2) * otherdot->getVelY()) / newRadius;
 
-              if (newDiameter <= 700) {
+              if (newDiameter <= MAX_DIAMETER) {
                 dots.push_back(createNewDot(newDiameter, posX, posY, newSpeedX, newSpeedY));
               }
             }
