@@ -46,7 +46,6 @@ void makeMoves(int numberThreads) {
             if (newDiameter % 20 != 0) {
               newDiameter += 10;
             }
-            newDiameter = getDiameter(newDiameter);
 
             int newPosX = currentDot->getPosX(), newPosY = currentDot->getPosY();
             if (newPosX + newDiameter >= SCREEN_WIDTH) {
@@ -103,7 +102,6 @@ void makeMoves(int numberThreads) {
           }
 
           int newDiameter = (otherDotCollider -> r + currentCollider -> r) * 2;
-          newDiameter = getDiameter(newDiameter);
 
           int newRadius = newDiameter / 2;
 
