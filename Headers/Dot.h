@@ -41,12 +41,21 @@ class Dot
 	// Print info
 	void print();
 
+	// Set star
+	void setStar() {isStar = true;};
+
+	// Get isStar
+	bool getIsStar() {return isStar;};
+
 	private:
 	//The X and Y offsets of the dot
 	int mPosX, mPosY;
 
 	//The velocity of the dot
 	int mVelX, mVelY;
+
+	// Variable to define a star
+	bool isStar = false;
 
 	//Dot's collision circle
 	Circle* mCollider;
