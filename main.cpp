@@ -2,6 +2,7 @@
 using namespace std;
 
 int main( int argc, char* args[] ) {
+  int numStarsAdded = 0;
 	if (argc < 2) {
     cout << "No se han ingresado suficientes argumentos" << endl;
 		exit(-1);
@@ -53,6 +54,7 @@ int main( int argc, char* args[] ) {
       }
     }
 
+    numStarsAdded = 0;
     for (size_t i = 0; i < dots.size(); i++) {
       // Move the dot
       Dot* dot = dots[i];
@@ -91,7 +93,6 @@ int main( int argc, char* args[] ) {
                 if (newDiameter % 20 != 0) {
                   newDiameter += 10;
                 }
-                newDiameter = getDiameter(newDiameter);
 
                 int newPosX = currentDot->getPosX(), newPosY = currentDot->getPosY();
                 if (newPosX + newDiameter >= SCREEN_WIDTH) {
@@ -106,11 +107,14 @@ int main( int argc, char* args[] ) {
                 dots.push_back(createNewDot(newDiameter, newPosX, newPosY));
                 dots.push_back(createNewDot(newDiameter, newPosX + newDiameter, newPosY + newDiameter));
 
-                // Creating star
-                int random = SCREEN_WIDTH - 400;
-                int posX = rand() % random;
-                int posY= rand() % random;
-                dots.push_back(new Dot(posX, posY));
+                if (numStarsAdded == 0) {
+                  // Creating star
+                  int random = SCREEN_WIDTH - 400;
+                  int posX = rand() % random;
+                  int posY= rand() % random;
+                  dots.push_back(new Dot(posX, posY));
+                  numStarsAdded += 1;
+                }
               }
             } else if (otherDotCollider -> r !=  currentCollider -> r) {
               int posX, posY;
@@ -125,14 +129,15 @@ int main( int argc, char* args[] ) {
               dots.erase(dots.begin() + i);
 
               int newDiameter = (otherDotCollider -> r + currentCollider -> r) * 2;
-              newDiameter = getDiameter(newDiameter);
 
               int newRadius = newDiameter / 2;
 
               int newSpeedX = ((dot->dotWidth / 2) * dot->getVelX() + (otherdot->dotWidth / 2) * otherdot->getVelX()) / newRadius;
               int newSpeedY = ((dot->dotWidth / 2) * dot->getVelY() + (otherdot->dotWidth / 2) * otherdot->getVelY()) / newRadius;
 
-              dots.push_back(createNewDot(newDiameter, posX, posY, newSpeedX, newSpeedY));
+              if (newDiameter <= 700) {
+                dots.push_back(createNewDot(newDiameter, posX, posY, newSpeedX, newSpeedY));
+              }
             }
           }
 

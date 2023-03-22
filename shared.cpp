@@ -85,19 +85,6 @@ bool checkCollision(Circle* a, Circle* b) {
   return false;
 }
 
-int getDiameter(int newDiameter) {
-	if (newDiameter > 260) {
-		newDiameter = 320;
-	} else if (newDiameter > 400) {
-		newDiameter = 400;
-	} else if (newDiameter > 500) {
-		newDiameter = 500;
-	} else if (newDiameter > 700) {
-		newDiameter = 700;
-	}
-	return newDiameter;
-}
-
 double distanceSquared(int x1, int y1, int x2, int y2) {
 	int deltaX = x2 - x1;
 	int deltaY = y2 - y1;
@@ -365,132 +352,8 @@ void close() {
 	SDL_Quit();
 }
 
-Dot* createNewDot(int diameter, int posX, int posY) {
-	int newPosX = min(max(diameter / 2, posX), SCREEN_WIDTH - (diameter / 2));
-	int newPosY = min(max(diameter / 2, posY), SCREEN_HEIGHT - (diameter / 2));
-  switch (diameter) {
-    case 20:
-      /* 20 dot */
-      /* Speed: [7, 8]  */
-      return (new Dot(rand() % 2 + 2.6, rand() % 2 + 3,
-				newPosX,
-				newPosY,
-				&dot20Texture, diameter));
-    case 40:
-      /* 40 dot */
-      /* Speed: [5, 6]  */
-      return (new Dot(rand() % 2 + 2.4, rand() % 2 + 2.8,
-				newPosX,
-				newPosY,
-				&dot40Texture, diameter));
-    case 60:
-      /* 60 dot */
-      /* Speed: [4, 5]  */
-      return (new Dot(rand() % 2 + 2.2, rand() % 2 + 2.4,
-				newPosX,
-				newPosY,
-				&dot60Texture, diameter));
-    case 80:
-      /* 80 dot */
-      /* Speed: [3, 4]  */
-      return (new Dot(rand() % 2 + 2, rand() % 2 + 3,
-				newPosX,
-				newPosY,
-				&dot80Texture, diameter));
-    case 100:
-      /* 100 dot */
-      /* Speed: [2, 3]  */
-      return (new Dot(rand() % 2 + 1.8, rand() % 2 + 2.5,
-				newPosX,
-				newPosY,
-				&dot100Texture, diameter));
-    case 120:
-      /* 100 dot */
-      /* Speed: [2, 3]  */
-      return (new Dot(rand() % 2 + 1.6, rand() % 2 + 2,
-				newPosX,
-				newPosY,
-				&dot120Texture, diameter));
-    case 140:
-      /* 100 dot */
-      /* Speed: [2, 3]  */
-      return (new Dot(rand() % 2 + 1.4, rand() % 2 + 1.8,
-				newPosX,
-				newPosY,
-				&dot140Texture, diameter));
-    case 160:
-      /* 160 dot */
-      /* Speed: [1, 2]  */
-      return (new Dot(rand() % 2 + 1.2, rand() % 2 + 1.5,
-				newPosX,
-				newPosY,
-				&dot160Texture, diameter));
-    case 180:
-      /* 100 dot */
-      /* Speed: [2, 3]  */
-      return (new Dot(rand() % 2 + 1, rand() % 2 + 1,
-				newPosX,
-				newPosY,
-				&dot180Texture, diameter));
-    case 200:
-      /* 100 dot */
-      /* Speed: [2, 3]  */
-      return (new Dot(rand() % 2 + 0.5, rand() % 2 + 0.5,
-				newPosX,
-				newPosY,
-				&dot200Texture, diameter));
-    case 220:
-      /* 100 dot */
-      /* Speed: [2, 3]  */
-      return (new Dot(rand() % 2 + 0.4, rand() % 2 + 0.4,
-				newPosX,
-				newPosY,
-				&dot220Texture, diameter));
-    case 240:
-      /* 100 dot */
-      /* Speed: [2, 3]  */
-      return (new Dot(rand() % 2 + 0.35, rand() % 2 + 0.35,
-				newPosX,
-				newPosY,
-				&dot240Texture, diameter));
-    case 260:
-      /* 100 dot */
-      /* Speed: [2, 3]  */
-      return (new Dot(rand() % 2 + 0.4, rand() % 2 + 0.4,
-				newPosX,
-				newPosY,
-				&dot260Texture, diameter));
-    case 320:
-      /* 100 dot */
-      /* Speed: [2, 3]  */
-      return (new Dot(rand() % 2 + 0.35, rand() % 2 + 0.35,
-				newPosX,
-				newPosY,
-				&dot320Texture, diameter));
-    case 400:
-      /* 100 dot */
-      /* Speed: [2, 3]  */
-      return (new Dot(rand() % 2 + 0.3, rand() % 2 + 0.3,
-				newPosX,
-				newPosY,
-				&dot400Texture, diameter));
-    case 500:
-      /* 100 dot */
-      /* Speed: [2, 3]  */
-      return (new Dot(rand() % 2 + 0.2, rand() % 2 + 0.2,
-				newPosX,
-				newPosY,
-				&dot500Texture, diameter));
-    case MAX_DIAMETER:
-    default:
-      /* 100 dot */
-      /* Speed: [2, 3]  */
-      return (new Dot(rand() % 2 + 0.1, rand() % 2 + 0.1,
-				newPosX,
-				newPosY,
-				&dot700Texture, diameter));
-  }
-}
+
+
 
 // Overload to set defined velocities
 Dot* createNewDot(int diameter, int posX, int posY, int velX, int velY) {
@@ -588,6 +451,20 @@ Dot* createNewDot(int diameter, int posX, int posY, int velX, int velY) {
 				newPosX,
 				newPosY,
 				&dot260Texture, diameter));
+    case 280:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(velX, velY,
+				newPosX,
+				newPosY,
+				&dot280Texture, diameter));
+    case 300:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(velX, velY,
+				newPosX,
+				newPosY,
+				&dot300Texture, diameter));
     case 320:
       /* 100 dot */
       /* Speed: [2, 3]  */
@@ -595,6 +472,27 @@ Dot* createNewDot(int diameter, int posX, int posY, int velX, int velY) {
 				newPosX,
 				newPosY,
 				&dot320Texture, diameter));
+    case 340:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(velX, velY,
+				newPosX,
+				newPosY,
+				&dot340Texture, diameter));
+    case 360:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(velX, velY,
+				newPosX,
+				newPosY,
+				&dot360Texture, diameter));
+    case 380:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(velX, velY,
+				newPosX,
+				newPosY,
+				&dot380Texture, diameter));
     case 400:
       /* 100 dot */
       /* Speed: [2, 3]  */
@@ -602,6 +500,34 @@ Dot* createNewDot(int diameter, int posX, int posY, int velX, int velY) {
 				newPosX,
 				newPosY,
 				&dot400Texture, diameter));
+    case 420:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(velX, velY,
+				newPosX,
+				newPosY,
+				&dot420Texture, diameter));
+    case 440:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(velX, velY,
+				newPosX,
+				newPosY,
+				&dot440Texture, diameter));
+    case 460:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(velX, velY,
+				newPosX,
+				newPosY,
+				&dot460Texture, diameter));
+    case 480:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(velX, velY,
+				newPosX,
+				newPosY,
+				&dot480Texture, diameter));
     case 500:
       /* 100 dot */
       /* Speed: [2, 3]  */
@@ -609,16 +535,344 @@ Dot* createNewDot(int diameter, int posX, int posY, int velX, int velY) {
 				newPosX,
 				newPosY,
 				&dot500Texture, diameter));
+    case 520:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(velX, velY,
+				newPosX,
+				newPosY,
+				&dot520Texture, diameter));
+    case 540:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(velX, velY,
+				newPosX,
+				newPosY,
+				&dot540Texture, diameter));
+    case 560:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(velX, velY,
+				newPosX,
+				newPosY,
+				&dot560Texture, diameter));
+    case 580:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(velX, velY,
+				newPosX,
+				newPosY,
+				&dot580Texture, diameter));
+    case 600:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(velX, velY,
+				newPosX,
+				newPosY,
+				&dot600Texture, diameter));
+    case 620:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(velX, velY,
+				newPosX,
+				newPosY,
+				&dot620Texture, diameter));
+    case 640:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(velX, velY,
+				newPosX,
+				newPosY,
+				&dot640Texture, diameter));
+    case 660:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(velX, velY,
+				newPosX,
+				newPosY,
+				&dot660Texture, diameter));
+    case 680:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(velX, velY,
+				newPosX,
+				newPosY,
+				&dot680Texture, diameter));
     case MAX_DIAMETER:
-    default:
       /* 100 dot */
       /* Speed: [2, 3]  */
       return (new Dot(velX, velY,
 				newPosX,
 				newPosY,
 				&dot700Texture, diameter));
+    default:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+        return nullptr;
   }
 }
+
+// Overload to set random velocities
+Dot* createNewDot(int diameter, int posX, int posY) {
+	int newPosX = min(max(diameter / 2, posX), SCREEN_WIDTH - (diameter / 2));
+	int newPosY = min(max(diameter / 2, posY), SCREEN_HEIGHT - (diameter / 2));
+  switch (diameter) {
+    case 20:
+      /* 20 dot */
+      /* Speed: [7, 8]  */
+      return (new Dot(rand() % 2 + 1.6, rand() % 2 + 1.6,
+				newPosX,
+				newPosY,
+				&dot20Texture, diameter));
+    case 40:
+      /* 40 dot */
+      /* Speed: [5, 6]  */
+      return (new Dot(rand() % 2 + 1.4, rand() % 2 + 1.4,
+				newPosX,
+				newPosY,
+				&dot40Texture, diameter));
+    case 60:
+      /* 60 dot */
+      /* Speed: [4, 5]  */
+      return (new Dot(rand() % 2 + 1.2, rand() % 2 + 1.2,
+				newPosX,
+				newPosY,
+				&dot60Texture, diameter));
+    case 80:
+      /* 80 dot */
+      /* Speed: [3, 4]  */
+      return (new Dot(rand() % 2 + 1.1, rand() % 2 + 1.1,
+				newPosX,
+				newPosY,
+				&dot80Texture, diameter));
+    case 100:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(rand() % 2 + 1, rand() % 2 + 1,
+				newPosX,
+				newPosY,
+				&dot100Texture, diameter));
+    case 120:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(rand() % 2 + 0.9, rand() % 2 + 0.9,
+				newPosX,
+				newPosY,
+				&dot120Texture, diameter));
+    case 140:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(rand() % 2 + 0.8, rand() % 2 + 0.8,
+				newPosX,
+				newPosY,
+				&dot140Texture, diameter));
+    case 160:
+      /* 160 dot */
+      /* Speed: [1, 2]  */
+      return (new Dot(rand() % 2 + 0.7, rand() % 2 + 0.7,
+				newPosX,
+				newPosY,
+				&dot160Texture, diameter));
+    case 180:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(rand() % 2 + 0.6, rand() % 2 + 0.6,
+				newPosX,
+				newPosY,
+				&dot180Texture, diameter));
+    case 200:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(rand() % 2 + 0.5, rand() % 2 + 0.5,
+				newPosX,
+				newPosY,
+				&dot200Texture, diameter));
+    case 220:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(rand() % 2 + 0.4, rand() % 2 + 0.4,
+				newPosX,
+				newPosY,
+				&dot220Texture, diameter));
+    case 240:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(rand() % 2 + 0.35, rand() % 2 + 0.35,
+				newPosX,
+				newPosY,
+				&dot240Texture, diameter));
+    case 260:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(rand() % 2 + 0.4, rand() % 2 + 0.4,
+				newPosX,
+				newPosY,
+				&dot260Texture, diameter));
+    case 280:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(rand() % 2 + 0.38, rand() % 2 + 0.38,
+				newPosX,
+				newPosY,
+				&dot280Texture, diameter));
+    case 300:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(rand() % 2 + 0.36, rand() % 2 + 0.36,
+				newPosX,
+				newPosY,
+				&dot300Texture, diameter));
+    case 320:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(rand() % 2 + 0.35, rand() % 2 + 0.35,
+				newPosX,
+				newPosY,
+				&dot320Texture, diameter));
+    case 340:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(rand() % 2 + 0.33, rand() % 2 + 0.33,
+				newPosX,
+				newPosY,
+				&dot340Texture, diameter));
+    case 360:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(rand() % 2 + 0.32, rand() % 2 + 0.32,
+				newPosX,
+				newPosY,
+				&dot360Texture, diameter));
+    case 380:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(rand() % 2 + 0.31, rand() % 2 + 0.31,
+				newPosX,
+				newPosY,
+				&dot380Texture, diameter));
+    case 400:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(rand() % 2 + 0.3, rand() % 2 + 0.3,
+				newPosX,
+				newPosY,
+				&dot400Texture, diameter));
+    case 420:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(rand() % 2 + 0.24, rand() % 2 + 0.24,
+				newPosX,
+				newPosY,
+				&dot420Texture, diameter));
+    case 440:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(rand() % 2 + 0.23, rand() % 2 + 0.23,
+				newPosX,
+				newPosY,
+				&dot440Texture, diameter));
+    case 460:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(rand() % 2 + 0.22, rand() % 2 + 0.22,
+				newPosX,
+				newPosY,
+				&dot460Texture, diameter));
+    case 480:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(rand() % 2 + 0.21, rand() % 2 + 0.21,
+				newPosX,
+				newPosY,
+				&dot480Texture, diameter));
+    case 500:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(rand() % 2 + 0.2, rand() % 2 + 0.2,
+				newPosX,
+				newPosY,
+				&dot500Texture, diameter));
+    case 520:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(rand() % 2 + 0.18, rand() % 2 + 0.18,
+				newPosX,
+				newPosY,
+				&dot520Texture, diameter));
+    case 540:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(rand() % 2 + 0.16, rand() % 2 + 0.16,
+				newPosX,
+				newPosY,
+				&dot540Texture, diameter));
+    case 560:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(rand() % 2 + 0.14, rand() % 2 + 0.14,
+				newPosX,
+				newPosY,
+				&dot560Texture, diameter));
+    case 580:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(rand() % 2 + 0.12, rand() % 2 + 0.12,
+				newPosX,
+				newPosY,
+				&dot580Texture, diameter));
+    case 600:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(rand() % 2 + 0.1, rand() % 2 + 0.1,
+				newPosX,
+				newPosY,
+				&dot600Texture, diameter));
+    case 620:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(rand() % 2 + 0.1, rand() % 2 + 0.1,
+				newPosX,
+				newPosY,
+				&dot620Texture, diameter));
+    case 640:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(rand() % 2 + 0.1, rand() % 2 + 0.1,
+				newPosX,
+				newPosY,
+				&dot640Texture, diameter));
+    case 660:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(rand() % 2 + 0.1, rand() % 2 + 0.1,
+				newPosX,
+				newPosY,
+				&dot660Texture, diameter));
+    case 680:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(rand() % 2 + 0.1, rand() % 2 + 0.1,
+				newPosX,
+				newPosY,
+				&dot680Texture, diameter));
+    case MAX_DIAMETER:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return (new Dot(rand() % 2 + 0.1, rand() % 2 + 0.1,
+				newPosX,
+				newPosY,
+				&dot700Texture, diameter));
+      
+    default:
+      /* 100 dot */
+      /* Speed: [2, 3]  */
+      return nullptr;
+  }
+}
+
+
+
+
 
 // Class functions
 LTexture::LTexture() {
