@@ -16,7 +16,7 @@ g++ .\main.cpp -I"include" -L"lib" -Wall -lmingw32 -lSDL2main -lSDL2 -lSDL2_imag
 #### Paralelo
 
 ```
-g++ .\main.cpp -I"include" -L"lib" -Wall -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -o main -fopenmp
+g++ .\pmain_1.cpp -I"include" -L"lib" -Wall -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -o main -fopenmp
 ```
 
 <hr>
@@ -29,7 +29,7 @@ g++ -Wall -o main.exe main.cpp -lSDL2 -lSDL2_image
 
 #### Paralelo
 ```
-g++ -Wall -o main.exe main.cpp -lSDL2 -lSDL2_image -fopenmp
+g++ -Wall -o main.exe p_main1.cpp -lSDL2 -lSDL2_image -fopenmp
 ```
 
 

@@ -3,6 +3,7 @@ using namespace std;
 
 int main( int argc, char* args[] ) {
   int numStarsAdded = 0;
+  bool starExists = false;
 	if (argc < 2) {
     cout << "No se han ingresado suficientes argumentos" << endl;
 		exit(-1);
@@ -27,7 +28,10 @@ int main( int argc, char* args[] ) {
   SDL_Event e;
 
   // Creating initial star in 200, 200
-  dots.push_back(new Dot(200, 200));
+  Dot* star = new Dot(200, 200);
+  star->setStar();
+  dots.push_back(star);
+  starExists = true;
 
   // The dot that will be moving around on the screen
   for (int i=0; i<atoi(args[1]); i++) {
@@ -53,15 +57,33 @@ int main( int argc, char* args[] ) {
         quit = true;
       }
     }
+    starExists = false;
+    for (Dot* d: dots) {
+      if (d->getIsStar()) {
+        starExists = true;
+        break;
+      }
+    }
+    if (!starExists) {
+      // Creating star
+      int random = SCREEN_WIDTH - 400;
+      int posX = rand() % random;
+      int posY= rand() % random;
+      Dot* tempStar = new Dot(posX, posY);
+      tempStar->setStar();
+      dots.push_back(tempStar);
+      numStarsAdded += 1;
+      starExists = true;
+    }
 
     numStarsAdded = 0;
     for (size_t i = 0; i < dots.size(); i++) {
       // Move the dot
-      Dot* dot = dots[i];
+      Dot* dot = dots.at(i);
       // For every other dot
       for (size_t j = i + 1; j < dots.size(); j++) {
         
-          Dot* otherdot = dots[j];
+          Dot* otherdot = dots.at(j);
 
           Circle* otherDotCollider = otherdot -> getCollider(otherdot);
           Circle* currentCollider = dot -> getCollider(dot);
@@ -73,10 +95,10 @@ int main( int argc, char* args[] ) {
             /*
             If there is no velocity on x and y, it means one of them is the star
             */
-            if (((dot -> getVelX() == 0 && dot -> getVelY() == 0) || (otherdot -> getVelX() == 0 && otherdot -> getVelY() == 0))) {
+            if (dot->getIsStar() || otherdot->getIsStar()) {
               Dot* currentDot = otherdot;
               Dot* star = dot;
-              if (otherdot -> getVelX() == 0 && otherdot -> getVelY() == 0) {
+              if (otherdot -> getIsStar()) {
                 currentDot = dot;
                 star = otherdot;
               }
@@ -107,12 +129,14 @@ int main( int argc, char* args[] ) {
                 dots.push_back(createNewDot(newDiameter, newPosX, newPosY));
                 dots.push_back(createNewDot(newDiameter, newPosX + newDiameter, newPosY + newDiameter));
 
-                if (numStarsAdded == 0) {
+                if (numStarsAdded == 0 && !starExists) {
                   // Creating star
                   int random = SCREEN_WIDTH - 400;
                   int posX = rand() % random;
                   int posY= rand() % random;
-                  dots.push_back(new Dot(posX, posY));
+                  Dot* tempStar = new Dot(posX, posY);
+                  tempStar->setStar();
+                  dots.push_back(tempStar);
                   numStarsAdded += 1;
                 }
               }
@@ -159,7 +183,7 @@ int main( int argc, char* args[] ) {
     SDL_RenderPresent( gRenderer );
 
     fps = 1.f / ((float)(newtime - oldtime) / 1000.f);
-    printf("FPS: %f\n", fps);
+    // printf("FPS: %f\n", fps);
   }
 
 	// Free resources and close SDL
