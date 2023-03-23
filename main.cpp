@@ -29,6 +29,7 @@ int main( int argc, char* args[] ) {
   int isParallel = atoi(args[2]);
   int t_num = atoi(args[3]);
   bool quit = false;
+  omp_init_lock(&starLock);
 
   dots.reserve(startDotsNum + 1);
 
@@ -91,13 +92,12 @@ int main( int argc, char* args[] ) {
     }
 
     numStarsAdded = 0;
-    // #pragma omp parallel for ordered num_threads(t_num) if (isParallel) shared(numStarsAdded) 
+    #pragma omp parallel for num_threads(t_num) shared(numStarsAdded) if (isParallel)
     for (size_t i = 0; i < dots.size(); i++) {
       // Move the dot
       Dot* dot = dots.at(i);
       // For every other dot
       for (size_t j = i + 1; j < dots.size(); j++) {
-        
           Dot* otherdot = dots.at(j);
 
           Circle* otherDotCollider = otherdot -> getCollider(otherdot);
@@ -141,24 +141,27 @@ int main( int argc, char* args[] ) {
                 Dot* childDot1 = createNewDot(newDiameter, newPosX, newPosY);
                 Dot* childDot2 = createNewDot(newDiameter, newPosX + newDiameter, newPosY + newDiameter);
 
-                #pragma omp critical
-                {
-                  dots.erase(dots.begin() + j);
-                  dots.erase(dots.begin() + i);
-                  dots.push_back(childDot1);
-                  dots.push_back(childDot2);
+                omp_set_lock(&starLock);
+                  if (!dots.at(i)->getErased() && !dots.at(i)->getErased()) {
+                    dots.at(i)->setErase();
+                    dots.at(j)->setErase();
+                    deletedDotsIndex.push_back(j);
+                    deletedDotsIndex.push_back(i);
+                    newDots.push_back(childDot1);
+                    newDots.push_back(childDot2);
 
-                  if (numStarsAdded == 0 && !starExists) {
-                    // Creating star
-                    int random = SCREEN_WIDTH - 400;
-                    int posX = rand() % random;
-                    int posY= rand() % random;
-                    Dot* tempStar = new Dot(posX, posY);
-                    tempStar->setStar();
-                    dots.push_back(tempStar);
-                    numStarsAdded += 1;
+                    if (numStarsAdded == 0 && !starExists) {
+                      // Creating star
+                      int random = SCREEN_WIDTH - 400;
+                      int posX = rand() % random;
+                      int posY= rand() % random;
+                      Dot* tempStar = new Dot(posX, posY);
+                      tempStar->setStar();
+                      dots.push_back(tempStar);
+                      numStarsAdded += 1;
+                    }
                   }
-                }
+                omp_unset_lock(&starLock);
               }
             } else if (otherDotCollider -> r !=  currentCollider -> r) {
               int posX, posY;
@@ -181,27 +184,62 @@ int main( int argc, char* args[] ) {
 
               #pragma omp critical
               {
-                dots.erase(dots.begin() + j);
-                dots.erase(dots.begin() + i);
-                if (newDiameter <= MAX_DIAMETER) {
-                  dots.push_back(newDot);
+                if (!dots.at(i)->getErased() && !dots.at(i)->getErased()) {
+                  dots.at(i)->setErase();
+                  dots.at(j)->setErase();
+
+                  deletedDotsIndex.push_back(j);
+                  deletedDotsIndex.push_back(i);
+                  if (newDiameter <= MAX_DIAMETER) {
+                    newDots.push_back(newDot);
+                  }
                 }
               }
             }
           }
-
-        
-
       }
     }
+
+    for (size_t i = 0; i < dots.size(); i++) {
+      int found = 0;
+
+      // Search for index
+      for (size_t j = 0; j < deletedDotsIndex.size(); j++) {
+        if (deletedDotsIndex.at(j) == (int)i) {
+          found = 1;
+          break;
+        }
+      }
+
+      // Do not insert
+      if (found == 1) { continue; }
+      newDots.push_back(dots.at(i));
+    }
+
+    if (!starExists) {
+      // Creating star
+      int random = SCREEN_WIDTH - 400;
+      int posX = rand() % random;
+      int posY= rand() % random;
+      Dot* tempStar = new Dot(posX, posY);
+      tempStar->setStar();
+      dots.push_back(tempStar);
+      numStarsAdded += 1;
+      starExists = true;
+    }
+
+    dots.clear();
+    dots.insert(dots.begin(), newDots.begin(), newDots.end());
+    deletedDotsIndex.clear();
+    newDots.clear();
 
     // Clear screen
     SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
     SDL_RenderClear( gRenderer );
 
     // Render objects
-    #pragma omp parallel for ordered num_threads(t_num) if (isParallel)
-    for (Dot* dot: dots) {
+    for (size_t i = 0; i < dots.size(); i++) {
+      Dot* dot = dots.at(i);
       dot->render();
     }
 
@@ -209,7 +247,7 @@ int main( int argc, char* args[] ) {
     SDL_RenderPresent( gRenderer );
 
     fps = 1.f / ((float)(newtime - oldtime) / 1000.f);
-    // cout << "FPS:" << fps << endl;
+    cout << "FPS:" << fps << endl;
   }
 
 	// Free resources and close SDL

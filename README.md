@@ -7,13 +7,6 @@
 <hr>
 
 ### Windows
-#### Secuencial
-
-```
-g++ .\main.cpp -I"include" -L"lib" -Wall -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -o main
-```
-
-#### Paralelo
 
 ```
 g++ .\pmain_1.cpp -I"include" -L"lib" -Wall -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -o main -fopenmp
@@ -22,10 +15,6 @@ g++ .\pmain_1.cpp -I"include" -L"lib" -Wall -lmingw32 -lSDL2main -lSDL2 -lSDL2_i
 <hr>
 
 ### Ubuntu
-#### Secuencial
-```
-g++ -Wall -o main.exe main.cpp -lSDL2 -lSDL2_image
-```
 
 #### Paralelo
 ```

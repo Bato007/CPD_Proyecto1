@@ -47,6 +47,12 @@ class Dot
 	// Get isStar
 	bool getIsStar() {return isStar;};
 
+	// Set is ereased
+	bool getErased() { return erased; };
+
+	// Set is ereased
+	void setErase() { erased = true; };
+
 	private:
 	//The X and Y offsets of the dot
 	int mPosX, mPosY;
@@ -56,6 +62,9 @@ class Dot
 
 	// Variable to define a star
 	bool isStar = false;
+
+	// Variable to define if the dot is erased
+	bool erased = false;
 
 	//Dot's collision circle
 	Circle* mCollider;

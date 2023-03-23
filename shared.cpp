@@ -1,4 +1,5 @@
 // Using SDL, SDL_image, standard IO, and strings
+#include <omp.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <vector>
@@ -18,6 +19,10 @@ const int MAX_DIAMETER = 700;
 
 // Dots controll variables
 vector<Dot*> dots;
+vector<Dot*> newDots;
+vector<int> deletedDotsIndex;
+
+omp_lock_t starLock;
 
 // The window we'll be rendering to
 SDL_Window* gWindow = NULL;
