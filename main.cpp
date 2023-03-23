@@ -243,6 +243,8 @@ int main( int argc, char* args[] ) {
       dot->render();
     }
 
+    if (dots.size() == 1) { quit = true; }
+
     // Update screen
     SDL_RenderPresent( gRenderer );
 

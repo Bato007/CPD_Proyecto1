@@ -29,7 +29,7 @@ g++ -Wall -o main.exe p_main1.cpp -lSDL2 -lSDL2_image -fopenmp
 <hr>
 
 ```
-./main n_balls
+./main n_balls isParallel (1 = true y 0 = false) n_threads
 ```
 
 
